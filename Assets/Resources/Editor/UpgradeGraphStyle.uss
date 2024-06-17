@@ -1,0 +1,36 @@
+VisualElement {}
+
+/* Style for nodes */
+Node {
+    background-color: #3c3c3c;
+    border-color: #2c2c2c;
+    border-width: 2px;
+    color: white;
+}
+
+/* Style for labels inside nodes */
+Node .title-label {
+    color: white;
+    font-size: 14px;
+}
+
+/* Style for input ports */
+.graph-view .port.input {
+    background-color: #4c4c4c;
+    border-color: #2c2c2c;
+    border-width: 1px;
+    color: white;
+}
+
+/* Style for output ports */
+.graph-view .port.output {
+    background-color: #4c4c4c;
+    border-color: #2c2c2c;
+    border-width: 1px;
+    color: white;
+}
+
+/* Style for connectors */
+.graph-view .connector {
+    background-color: #ff0000;
+}
