@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static StatManager;
 
-public class Explosion : DamageDealer
+public class Explosion : DamageElement
 {
     public string targetTag = "Enemy";
 

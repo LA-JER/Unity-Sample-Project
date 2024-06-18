@@ -17,6 +17,7 @@ public class UpgradeDisplay : MonoBehaviour
 
     public static UpgradeDisplay instance;
 
+    [SerializeField] private Canvas displayCanvas;
     [SerializeField] private TMP_Dropdown dropdown;
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI details;
@@ -74,14 +75,17 @@ public class UpgradeDisplay : MonoBehaviour
     {
         if (details == null) return;
         if (currentTurret == null) return;
-        details.text = $" DMG : {(int)currentTurret.GetTotalDamage()}  KILLS : {currentTurret.GetKills()}";
+        float dmg = currentTurret.GetTotalDamage();
+        int kills = currentTurret.GetKills();
+
+        details.text = $" DMG : {NumberShorthand.FormatNumber(dmg)}  KILLS : {NumberShorthand.FormatNumber(kills)}";
 
         if(sell != null)
         {
             int totalCost = currentTurret.GetTotalSpent();
             int adjustedRefund = (int)(totalCost * GameManager.Instance.GetRefundPercent());
 
-            sell.text = $"SELL : {adjustedRefund}";
+            sell.text = $"SELL : {NumberShorthand.FormatNumber(adjustedRefund)}";
         }
     }
 
@@ -224,7 +228,11 @@ public class UpgradeDisplay : MonoBehaviour
         {
             if(display != null && display.activeSelf)
             {
-                display.transform.position = Camera.main.WorldToScreenPoint(currentTurret.transform.position);
+                    Vector2 screenPoint = Camera.main.WorldToScreenPoint(currentTurret.transform.position);
+                    Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
+
+                    display.transform.position = clampedPoint;
+                
             }
         }
     }
@@ -274,6 +282,15 @@ public class UpgradeDisplay : MonoBehaviour
                 Destroy(p);
             }
         }
+    }
+
+    Vector2 ClampToCanvasEdge(RectTransform view, Vector2 screenPoint)
+    {
+
+        Vector3 max1 = displayCanvas.pixelRect.max;
+        screenPoint.x = Mathf.Clamp(screenPoint.x, 0+(view.rect.size.x * 0.75f), max1.x);
+        screenPoint.y = Mathf.Clamp(screenPoint.y, 0 + (view.rect.size.y * 0.25f), max1.y);
+        return screenPoint;
     }
 
     private void OnDestroy()

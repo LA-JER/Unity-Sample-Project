@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Enemy : MonoBehaviour, IHoverInfo
 {
     public delegate void EnemyDeathHandler(GameObject killer, EnemyRank rank, int value);
-    public static event EnemyDeathHandler OnEnemyDeath;
+    public static event EnemyDeathHandler OnEnemyKilled;
     public enum EnemyRank
     {
         Minor,
@@ -20,46 +19,54 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
     [SerializeField] private string Description;
     [SerializeField] private EnemyRank rank;
     [SerializeField] private int value;
-    [SerializeField] private List<Transform> waypoints = new List<Transform>();
+    public  List<Transform> waypoints = new List<Transform>();
 
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Health health;
-    private StatManager statManager;
-    private float distanceThreshold = 0.35f;
+    public  StatManager statManager;
+    private float deathLingerDuration = .25f;
 
     private void Awake()
     {
         waypoints = EnemyPathManager.Instance.GetWayPoints();
+        Initialize();
     }
 
-    //moves toward the first Transform if the List "Targets",
-    //when it reaches its target, begins moving towards the next target
-    public virtual void Move()
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        if (waypoints.Count > 0 && rb != null)
+        Move();
+    }
+
+    
+    public abstract void Move();
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision != null )
         {
-            Vector2 direction = (waypoints[0].position - transform.position).normalized;
-            //Vector2 direction = (new Vector2(target.position.x, target.position.y) - GetRigidbody2D().position).normalized;
-           rb.velocity = (direction * statManager.GetStat(StatManager.Stat.moveSpeed));
-            //GetRigidbody2D().MovePosition(GetRigidbody2D().position *  direction);
-            //check if the object is close enough to the waypoint
-            if (Vector2.Distance(transform.position, waypoints[0].position) <= distanceThreshold)
+            if(collision.CompareTag("Home")) 
+            {
+                OnBaseCollide(collision);
+
+            } else if(collision.CompareTag("Turret"))
             {
                 
-                waypoints.RemoveAt(0);
+                    OnTurretCollide(collision);
+                
+            } else if(collision.CompareTag("Enemy"))
+            {
+                OnEnemyCollide(collision);
             }
+
         }
     }
 
-    public virtual void Attack(Health other)
-    {
-        if(other != null)
-        {
-            other.Damage(gameObject, statManager.GetStat(StatManager.Stat.damage), false);
-        }
-    }
+    public abstract void OnBaseCollide(Collider2D collision);
+    public abstract void OnEnemyCollide(Collider2D collision);
+    public abstract void OnTurretCollide(Collider2D collision);
 
-     public void Initialize()
+    void Initialize()
     {
         statManager = GetComponent<StatManager>();
         if (statManager == null)
@@ -77,7 +84,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
         {
             Debugger.Log(Debugger.AlertType.Warning, $"{name} coud not find its attached Health! Did you forget to add the component?");
         }
-        health.onHealthZero += onDeath;
+        health.onHealthZero += OnHealthZero;
     }
 
     public void AddTarget(Transform target)
@@ -93,12 +100,18 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
         }
     }
 
-
-    public virtual void onDeath(GameObject source)
+    public abstract void OnDeath(GameObject killer);
+     void OnHealthZero(GameObject source)
     {
-        Debugger.Log(Debugger.AlertType.Verbose, $"{name} killed by {source.name}");
-        OnEnemyDeath?.Invoke(source, rank, value);
-        Destroy(gameObject);
+        //Debugger.Log(Debugger.AlertType.Verbose, $"{name} killed by {source.name}");
+        OnDeath(source);
+        OnEnemyKilled?.Invoke(source, rank, value);
+        //this.enabled = false;
+    }
+
+    private void OnDestroy()
+    {
+        health.onHealthZero -= OnHealthZero;
     }
 
     public string GetName()

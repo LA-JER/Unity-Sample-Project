@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
+  m_Name: Ice B2
+  m_EditorClassIdentifier: 
+  icon: {fileID: 0}
+  upgradeName: 
+  upgradeDescription: Shoots more shards at once
+  price: 64
+  statDictionary:
+    _serializedList:
+    - Key: 9
+      Value:
+        operation: 0
+        modifier: 14
+    - Key: 5
+      Value:
+        operation: 1
+        modifier: 0.85
+  spriteGroup:
+    turretSprites:
+      _serializedList:
+      - Key: 0
+        Value: {fileID: 21300000, guid: 314bf3ec6e4317a458a4a97f5965faf5, type: 3}
+  nextUpgrades: []
+  hitEffects: []

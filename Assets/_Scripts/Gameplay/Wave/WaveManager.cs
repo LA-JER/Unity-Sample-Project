@@ -10,7 +10,7 @@ public class WaveManager : MonoBehaviour
     public static event WaveChange OnWaveEnd;
     public static event WaveChange OnWaveStart;
     public delegate void RunEnd();
-    public static event RunEnd OnOutOfWaves;
+    public static event RunEnd OnGameDone;
 
     public static WaveManager Instance;
 
@@ -23,6 +23,7 @@ public class WaveManager : MonoBehaviour
     private Coroutine spawnCoroutine;
     private float configElapsedTime = 0;
     private bool spawnNextConfig = false;
+    private bool outOfWaves = false;
 
     private void Awake()
     {
@@ -55,6 +56,14 @@ public class WaveManager : MonoBehaviour
     void FixedUpdate()
     {
         SpawnWaves();
+        if (outOfWaves)
+        {
+            if (CheckIfNoEnemies())
+            {
+                OnGameDone?.Invoke();
+                gameObject.SetActive(false);
+            }
+        }
     }
 
     void SpawnWaves()
@@ -113,11 +122,27 @@ public class WaveManager : MonoBehaviour
             
         } else
         {
-            OnOutOfWaves?.Invoke();
+            //OnGameDone?.Invoke();
+            outOfWaves = true;
         }
 
         
 
+    }
+
+    private bool CheckIfNoEnemies()
+    {
+        Transform enemyHolder = gameManager.GetEnemyHolder();
+        if(enemyHolder != null)
+        {
+            int enemies = enemyHolder.transform.childCount;
+            if(enemies == 0)
+            {
+                
+                return true;
+            }
+        }
+        return false;
     }
 
     private IEnumerator SpawnCurrentConfig()

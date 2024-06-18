@@ -21,7 +21,7 @@ public class DamageNumber : MonoBehaviour
         if (textMeshPro.text != null)
         {
 
-            textMeshPro.text = ((int)damageAmount).ToString();
+            textMeshPro.text = NumberShorthand.FormatNumber(damageAmount);
 
         }
 

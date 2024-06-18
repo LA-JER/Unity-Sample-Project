@@ -27,7 +27,7 @@ public class SpawnHitEffect : ProjectileHitEffect
                             GameObject obj = Instantiate(prefab);
                             obj.transform.position = owner.transform.position;
 
-                            DamageDealer damageDealer = obj.GetComponent<DamageDealer>();
+                            DamageElement damageDealer = obj.GetComponent<DamageElement>();
                             if(damageDealer != null)
                             {
                                 damageDealer.source = owner.source;
@@ -52,7 +52,7 @@ public class SpawnHitEffect : ProjectileHitEffect
                             GameObject obj = Instantiate(prefab);
                             obj.transform.position = hitObject.transform.position;
 
-                            DamageDealer damageDealer = obj.GetComponent<DamageDealer>();
+                            DamageElement damageDealer = obj.GetComponent<DamageElement>();
                             if (damageDealer != null)
                             {
                                 damageDealer.source = owner.source;

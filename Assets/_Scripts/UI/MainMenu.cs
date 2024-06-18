@@ -4,7 +4,7 @@ using UnityEngine;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private AudioSource buttonClick;
-
+    [SerializeField] private GameObject statsPage;
 
     public void Play()
     {
@@ -13,6 +13,11 @@ public class MainMenu : MonoBehaviour
             buttonClick.Play();
         }
         SceneTransitioner.Instance.LoadNextLevel();
+    }
+
+    public void ViewStats()
+    {
+        StatsPage.Instance.ToggleScreen();
     }
 
     public void Quit()

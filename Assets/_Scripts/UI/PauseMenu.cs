@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -40,6 +41,13 @@ public class PauseMenu : MonoBehaviour
             Time.timeScale = isPaused ? 0f : previousTimeScale;
 
         }
+    }
+
+    public void ToggleDamageNumbers()
+    {
+        int current = DataHandler.GetFlagInt(DataHandler.Flag.showDamageNumbers);
+        int toggle = current > 0 ? 0 : 1;
+        DataHandler.SetFlag(DataHandler.Flag.showDamageNumbers, toggle);
     }
 
 

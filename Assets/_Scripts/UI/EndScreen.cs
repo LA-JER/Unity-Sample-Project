@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 public class EndScreen : MonoBehaviour
 {
@@ -43,8 +44,26 @@ public class EndScreen : MonoBehaviour
         totalKills.text = kills.ToString();
         totalDamage.text = damage.ToString();
         totalSpent.text = spent.ToString();
-        totalElapsedTime.text = elapsed.ToString();
+        totalElapsedTime.text = FormatTime(elapsed);
         screen.SetActive(true);
         
+    }
+
+    public static string FormatTime(float timeInSeconds)
+    {
+        if (timeInSeconds < 0)
+        {
+            throw new ArgumentOutOfRangeException("Time cannot be negative.");
+        }
+
+        // Convert seconds to hours, minutes, and remaining seconds
+        int hours = (int)Mathf.Floor(timeInSeconds / 3600f); // Floor ensures whole numbers
+        int minutes = (int)Mathf.Floor((timeInSeconds % 3600f) / 60f);
+        int seconds = (int)(timeInSeconds % 60f);
+
+        // Format the time string with leading zeros for hours and minutes if necessary
+        string formattedTime = $"{hours:00}:{minutes:00}:{seconds:00}";
+
+        return formattedTime;
     }
 }

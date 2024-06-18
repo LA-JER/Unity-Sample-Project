@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static StatManager;
 
-public class Projectile : DamageDealer
+public class Projectile : DamageElement
 {
     private Transform target;
     private StatManager statManager;

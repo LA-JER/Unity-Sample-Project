@@ -17,7 +17,9 @@ public class HomeBase : MonoBehaviour
 
     private void Health_onHealthZero(GameObject source)
     {
+        Debugger.Log(Debugger.AlertType.Info, "Home is Destroyed!");
         OnBaseDie?.Invoke();
+        //Health.enabled = false;
         this.enabled = false;
     }
 

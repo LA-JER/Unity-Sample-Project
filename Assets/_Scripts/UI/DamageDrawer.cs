@@ -19,27 +19,30 @@ public class DamageDrawer : MonoBehaviour
     {
         if (DamageNumberPrefab != null && spawn != null )
         {
-            Vector3 numberPosition = POS;
-            Vector3 startPOS = numberPosition + new Vector3(Random.Range(-randomDistance, randomDistance), Random.Range(randomDistance, randomDistance), 0f);
-            if (!isCritical)
+            //check player prefs if we should show damage numbers
+            if(DataHandler.GetFlagInt(DataHandler.Flag.showDamageNumbers) == 1)
             {
-                GameObject damageNumber = Instantiate(DamageNumberPrefab, spawn);
-                damageNumber.transform.position = startPOS;
-                DamageNumber d = damageNumber.GetComponent<DamageNumber>();
-                d.Initialize(amount);
+                Vector3 numberPosition = POS;
+                Vector3 startPOS = numberPosition + new Vector3(Random.Range(-randomDistance, randomDistance), Random.Range(randomDistance, randomDistance), 0f);
+                if (!isCritical)
+                {
+                    GameObject damageNumber = Instantiate(DamageNumberPrefab, spawn);
+                    damageNumber.transform.position = startPOS;
+                    DamageNumber d = damageNumber.GetComponent<DamageNumber>();
+                    d.Initialize(amount);
 
 
+                }
+                else
+                {
+                    GameObject damageNumber = Instantiate(CriticalDamageNumberPrefab, spawn);
+                    damageNumber.transform.position = startPOS;
+                    DamageNumber d = damageNumber.GetComponent<DamageNumber>();
+                    d.Initialize(amount);
+
+
+                }
             }
-            else
-            {
-                GameObject damageNumber = Instantiate(CriticalDamageNumberPrefab, spawn);
-                damageNumber.transform.position = startPOS;
-                DamageNumber d = damageNumber.GetComponent<DamageNumber>();
-                d.Initialize(amount);
-
-
-            }
-
         }
     }
 

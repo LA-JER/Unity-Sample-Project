@@ -29,6 +29,7 @@ public class StatManager : MonoBehaviour
         critBounce,
         targetMax,
         NONE,
+        firePoints,
 
     }
 

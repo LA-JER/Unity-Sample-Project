@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 297147803848677669, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.75
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 297147803848677669, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.75
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 297147803848677669, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: m_LocalPosition.x
@@ -82,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: ee65d7dba2853374ea7c14cbcfed0353, type: 3}
     - target: {fileID: 7094740808394130960, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: statDictionary._serializedList.Array.data[0].Value
-      value: 14
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7094740808394130960, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: statDictionary._serializedList.Array.data[1].Value
@@ -90,7 +90,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7094740808394130960, guid: dc4601b04e1ce35489cb5430d5180732, type: 3}
       propertyPath: statDictionary._serializedList.Array.data[2].Value
-      value: 2.5
+      value: 2.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

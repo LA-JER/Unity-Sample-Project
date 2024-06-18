@@ -4,8 +4,11 @@ using UnityEngine;
 using static Targeting;
 using static StatManager;
 
-public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
+public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 {
+    public delegate void TurretActivate();
+    public event TurretActivate OnActivate;
+    public event TurretActivate OnTurretShoot;
 
     [SerializeField] private Sprite Icon;
 
@@ -15,13 +18,13 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     public TargetingStyle targetingStyle = TargetingStyle.closest;
     [SerializeField] private int price = 3;
     [SerializeField] private string enemyTag = "Enemy"; // Tag of the target
-    [SerializeField] private Transform pivot; 
-    [SerializeField] private GameObject projectilePrefab; 
-    [SerializeField] private Transform firePoint; // Point from where projectiles are fired
+    public Transform pivot; 
+    public GameObject projectilePrefab; 
+    public Transform mainFirePoint; // Point from where projectiles are fired
     [SerializeField] private CircleCollider2D rangeCollider;
 
-    private StatManager statManager;
-    private ProjectileManager projectileManager;
+    public StatManager statManager;
+    public ProjectileManager projectileManager;
     private List<Transform> targetsInRange = new List<Transform>(); // keeps track of enemies in range of this turret
     private float fireCountdown = 0f; // Countdown timer for next shot
     public float timeBetweenConsecutiveShot = 0.1f;
@@ -32,8 +35,8 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 
     private void Awake()
     {
-        DamageDealer.OnDamageDealt += DamageDealer_OnDamageDealt;
-        Enemy.OnEnemyDeath += Enemy_OnEnemyDeath;
+        DamageElement.OnDamageDealt += DamageDealer_OnDamageDealt;
+        Enemy.OnEnemyKilled += Enemy_OnEnemyDeath;
         UpgradeDisplay.OnBuyUpgrade += UpgradeDisplay_OnBuyUpgrade;
         totalSpent += price;
     }
@@ -65,7 +68,7 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         
     }
 
-    private void DamageDealer_OnDamageDealt(GameObject source, DamageDealer.DamageInstance damage)
+    private void DamageDealer_OnDamageDealt(GameObject source, DamageElement.DamageInstance damage)
     {
         if(source == null) return;
         if(source == gameObject)
@@ -91,7 +94,7 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     }
 
 
-    void AimAndFire()
+     void AimAndFire()
     {
         if(statManager != null)
         {
@@ -113,6 +116,7 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
                 // Fire at the targetsInRange if countdown reaches zero
                 if (fireCountdown <= 0f)
                 {
+                    OnTurretShoot?.Invoke();
                     StartCoroutine(Shoot(targets));
                     float fireRate = statManager.GetStat(Stat.fireRate);
                     fireCountdown = 1f / fireRate;
@@ -123,8 +127,8 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         }
     }
 
-    //Rotates the pivot to face a given transform
-    void RotateAim(Transform target)
+    //called in update
+    public virtual void RotateAim(Transform target)
     {
         if (target != null)
         {
@@ -147,38 +151,13 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         }
     }
 
-    // Shoot at the targetsInRange
-    IEnumerator Shoot(List<Transform> targets)
-    {
-        if (targets != null && targets.Count > 0)
-        {
-            float coneAngle = statManager.GetStat(StatManager.Stat.coneAngle);
-            float fireCount = statManager.GetStat(StatManager.Stat.fireCount);
 
-            for (int i = 0; i < fireCount; i++)
-            {
-                float coneDeviation = Random.Range(-coneAngle * 0.5f, coneAngle * 0.5f);
-                float angleDeviatedDegrees = coneDeviation * Mathf.Rad2Deg;
-                Quaternion deviation = firePoint.rotation * Quaternion.Euler(0, 0, coneDeviation);
-                GameObject projectile = Instantiate(projectilePrefab, firePoint.position, deviation, GameManager.Instance.GetProjectileHolder());
-                Projectile projectile1 = projectile.GetComponent<Projectile>();
-                if (projectile1 != null)
-                {
-                    projectile1.Initialize(gameObject, statManager );
-                    projectileManager.ApplyEffects(projectile1);
-                } else
-                {
-                    Debugger.Log(Debugger.AlertType.Warning, $"{name} tried to init. projectile but the script was not found!");
-                }
-
-                yield return new WaitForSeconds(timeBetweenConsecutiveShot);
-            }
-        }
-    }
+    public abstract IEnumerator Shoot(List<Transform> targets);
 
     // Handles enemy entering tower's range
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
 
@@ -194,6 +173,7 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     // Handle enemy leaving tower's range
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
             if (targetsInRange.Contains(collision.transform))
@@ -231,8 +211,8 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 
     private void OnDestroy()
     {
-        DamageDealer.OnDamageDealt -= DamageDealer_OnDamageDealt;
-        Enemy.OnEnemyDeath -= Enemy_OnEnemyDeath;
+        DamageElement.OnDamageDealt -= DamageDealer_OnDamageDealt;
+        Enemy.OnEnemyKilled -= Enemy_OnEnemyDeath;
         UpgradeDisplay.OnBuyUpgrade -= UpgradeDisplay_OnBuyUpgrade;
     }
 
@@ -258,6 +238,7 @@ public class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 
     public void Activate(GameObject o)
     {
+        OnActivate?.Invoke();
         isActivated = true;
     }
     public string GetName()
