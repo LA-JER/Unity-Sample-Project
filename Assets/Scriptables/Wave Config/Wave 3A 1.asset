@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Wave 3A 1
   m_EditorClassIdentifier: 
   waveNumber: 3
-  duration: 60
+  duration: 30
   timeBetweenSpawns: 2
   weightTable:
     _serializedList:

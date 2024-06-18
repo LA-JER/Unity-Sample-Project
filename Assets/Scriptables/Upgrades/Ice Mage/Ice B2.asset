@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Ice B2
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
-  upgradeName: 
+  upgradeName: Duplicator
   upgradeDescription: Shoots more shards at once
   price: 64
   statDictionary:
@@ -22,6 +22,18 @@ MonoBehaviour:
       Value:
         operation: 0
         modifier: 14
+    - Key: 7
+      Value:
+        operation: 1
+        modifier: 0.85
+    - Key: 8
+      Value:
+        operation: 1
+        modifier: 0.85
+    - Key: 1
+      Value:
+        operation: 0
+        modifier: -0.5
     - Key: 5
       Value:
         operation: 1

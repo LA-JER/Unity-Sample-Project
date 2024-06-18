@@ -14,7 +14,8 @@ public class Item : MonoBehaviour
     public enum Operation
     {
         Additive,
-        Multiplicative
+        Multiplicative,
+        Set,
     }
 
     public Operation operation;

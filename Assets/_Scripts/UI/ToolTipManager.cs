@@ -51,7 +51,7 @@ public class ToolTipManager : MonoBehaviour
     {
         if (toolTip)
         {
-            //TrackPosition();
+            TrackPosition();
         }
 
     }
@@ -64,7 +64,7 @@ public class ToolTipManager : MonoBehaviour
                 Vector2 screenPoint = Input.mousePosition;
                 Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
 
-            toolTip.transform.position = clampedPoint;
+            toolTip.transform.position = clampedPoint + new Vector2(-2, 0);
 
             
         }
@@ -77,7 +77,7 @@ public class ToolTipManager : MonoBehaviour
             toolTip.SetActive(true);
             toolTipTitleText.text = title;
             toolTipMainText.text = mainText;
-            toolTip.transform.position = ClampToCanvasEdge(view, pos);
+            //toolTip.transform.position = ClampToCanvasEdge(view, pos);
             //toolTip.transform.position = pos;
         }
     }

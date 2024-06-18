@@ -30,6 +30,8 @@ public class StatManager : MonoBehaviour
         targetMax,
         NONE,
         firePoints,
+        trackingStrength,
+        trackingSize,
 
     }
 
@@ -97,6 +99,8 @@ public class StatManager : MonoBehaviour
         }
         else
         {
+
+            //AddStat(stat, newValue);
             Debugger.Log(Debugger.AlertType.Error, $"Tried to modify stat '{stat}' on '{name}' but it does not exist!");
         }
     }
@@ -105,7 +109,7 @@ public class StatManager : MonoBehaviour
     {
         if (statDictionary.Keys.Contains(stat))
         {
-            return statDictionary[stat];
+            return Mathf.Clamp(statDictionary[stat], 0 , Mathf.Infinity);
         }
         else
         {

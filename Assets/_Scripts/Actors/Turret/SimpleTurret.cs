@@ -23,7 +23,7 @@ public class SimpleTurret : Turret
                 if (projectile1 != null)
                 {
                     projectile1.Initialize(gameObject, statManager, true);
-                    projectileManager.ApplyEffects(projectile1);
+                    projectileManager.InitializeModules(projectile1);
                 }
                 else
                 {

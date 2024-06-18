@@ -15,14 +15,26 @@ MonoBehaviour:
   icon: {fileID: 0}
   upgradeName: Chilled fingers
   upgradeDescription: Hits slow targets
-  price: 40
+  price: 46
   statDictionary:
-    _serializedList: []
+    _serializedList:
+    - Key: 22
+      Value:
+        operation: 1
+        modifier: 1.25
+    - Key: 23
+      Value:
+        operation: 1
+        modifier: 1.25
+    - Key: 14
+      Value:
+        operation: 1
+        modifier: 1.25
   spriteGroup:
     turretSprites:
       _serializedList:
       - Key: 1
         Value: {fileID: 21300000, guid: 533cf78891683e64ba69bceba6c36d66, type: 3}
   nextUpgrades: []
-  hitEffects:
+  projectileModules:
   - {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}

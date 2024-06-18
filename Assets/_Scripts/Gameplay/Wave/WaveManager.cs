@@ -24,6 +24,7 @@ public class WaveManager : MonoBehaviour
     private float configElapsedTime = 0;
     private bool spawnNextConfig = false;
     private bool outOfWaves = false;
+    private bool isPaused = false;
 
     private void Awake()
     {
@@ -36,6 +37,13 @@ public class WaveManager : MonoBehaviour
             Destroy(this);
         }
         ContinueButton.OnContinue += ContinueButton_OnContinue;
+        //GameManager.OnPaused += GameManager_OnPaused;
+    }
+
+    private void GameManager_OnPaused(bool isPaused)
+    {
+        this.isPaused = isPaused;
+        
     }
 
     private void ContinueButton_OnContinue()
@@ -55,13 +63,24 @@ public class WaveManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        SpawnWaves();
-        if (outOfWaves)
+        if (GameManager.Instance.GetIsGamePaused() == false)
         {
-            if (CheckIfNoEnemies())
+            SpawnWaves();
+            if (outOfWaves)
             {
-                OnGameDone?.Invoke();
-                gameObject.SetActive(false);
+                if (CheckIfNoEnemies())
+                {
+                    OnGameDone?.Invoke();
+                    gameObject.SetActive(false);
+                }
+            }
+        } else
+        {
+            if (spawnCoroutine != null)
+            {
+
+                StopCoroutine(spawnCoroutine);
+                spawnCoroutine = null;
             }
         }
     }
@@ -97,6 +116,16 @@ public class WaveManager : MonoBehaviour
                 {
                     if (spawnCoroutine == null)
                     {
+                        if(waveConfigs[configIndex] is AlertWaveConfig)
+                        {
+                            AlertWaveConfig config = (AlertWaveConfig)waveConfigs[configIndex];
+                            spawnCoroutine = StartCoroutine(SpawnCurrentConfig());
+                            configIndex++;
+                            AlertManager.instance.ShowAlert(config.title, config.description, config.icon);
+                            return;
+
+                        }
+
                         OnConfigStart?.Invoke(waveConfigs[configIndex]);
                         spawnCoroutine = StartCoroutine(SpawnCurrentConfig());
                     }
@@ -160,7 +189,7 @@ public class WaveManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError($"{name} tried to spawn an enemy prefab but recieved a null object");
+                    Debugger.Log( Debugger.AlertType.Warning , $"{name} tried to spawn an enemy prefab but recieved a null object");
                 }
                 yield return new WaitForSeconds(wait);
             }
@@ -183,7 +212,10 @@ public class WaveManager : MonoBehaviour
     private GameObject RollEnemyType(WaveConfig config)
     {
         List<GameObject> randomPrefab = RandomSelect<GameObject>.ChooseRandomObjects(config.weightTable, 1);
-
+        if(randomPrefab == null || randomPrefab.Count ==0)
+        {
+            return null;
+        }
         return randomPrefab[0];
 
     }
@@ -191,5 +223,6 @@ public class WaveManager : MonoBehaviour
     private void OnDestroy()
     {
         ContinueButton.OnContinue -= ContinueButton_OnContinue;
+       // GameManager.OnPaused -= GameManager_OnPaused;
     }
 }

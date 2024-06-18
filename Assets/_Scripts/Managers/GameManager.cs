@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     public delegate void OnGame(bool won);
     public static event OnGame OnGameEnd;
 
+    //public delegate void OnPause(bool isPaused);
+    //public static event OnPause OnPaused;
+
     public static GameManager Instance;
 
     public Debugger.PrintType printType;
@@ -21,6 +24,7 @@ public class GameManager : MonoBehaviour
     private int kills = 0;
     private int currencySpent = 0;
     private bool gameDone = false;
+    public bool isGamePaused = false;
     private void Awake()
     {
         if(Instance == null)
@@ -36,8 +40,24 @@ public class GameManager : MonoBehaviour
         Shop.OnBuyTurret += Shop_OnBuyTurret;
         Enemy.OnEnemyKilled += Enemy_OnEnemyDeath;
         WaveManager.OnGameDone += GameWon;
+        AlertManager.OnAlert += AlertManager_OnAlert;
     }
 
+    private void AlertManager_OnAlert(bool isShown)
+    {
+        Debug.Log("is shown is:" + isShown);
+        if(isShown)
+        {
+            //OnPaused?.Invoke(true);
+            isGamePaused = true;
+        }
+        else
+        {
+           //OnPaused?.Invoke(false);
+            isGamePaused = false;
+        }
+
+    }
 
     private void Enemy_OnEnemyDeath(GameObject souce, Enemy.EnemyRank rank, int value)
     {
@@ -102,8 +122,13 @@ public class GameManager : MonoBehaviour
         Shop.OnBuyTurret -= Shop_OnBuyTurret;
         Enemy.OnEnemyKilled -= Enemy_OnEnemyDeath;
         WaveManager.OnGameDone -= GameWon;
+        AlertManager.OnAlert -= AlertManager_OnAlert;
     }
 
+    public bool GetIsGamePaused()
+    {
+        return isGamePaused;
+    }
     public float GetRefundPercent()
     {
         return refundPercent;

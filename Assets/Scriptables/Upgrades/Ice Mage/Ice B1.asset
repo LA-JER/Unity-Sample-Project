@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: Ice B1
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
-  upgradeName: Fast Reader
-  upgradeDescription: Casts spells 15% faster
+  upgradeName: Ice Splinters
+  upgradeDescription: PIERCE +1, slightly lowered DMG
   price: 36
   statDictionary:
     _serializedList:
+    - Key: 6
+      Value:
+        operation: 0
+        modifier: 1
     - Key: 1
       Value:
-        operation: 1
-        modifier: 1.15
+        operation: 0
+        modifier: -0.5
   spriteGroup:
     turretSprites:
       _serializedList:

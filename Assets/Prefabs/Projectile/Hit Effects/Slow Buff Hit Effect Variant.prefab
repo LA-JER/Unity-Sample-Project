@@ -38,7 +38,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 221633668561233994, guid: d04e3b30fd2b7f4499cb791d0ecb4c84, type: 3}
       propertyPath: hitBuffs.Array.data[0].affectedStats._serializedList.Array.data[0].Value.modifier
-      value: 0.75
+      value: 0.66
       objectReference: {fileID: 0}
     - target: {fileID: 221633668561233994, guid: d04e3b30fd2b7f4499cb791d0ecb4c84, type: 3}
       propertyPath: hitBuffs.Array.data[0].affectedStats._serializedList.Array.data[0].Value.operation

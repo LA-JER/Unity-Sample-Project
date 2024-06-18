@@ -29,14 +29,21 @@ public class MultiFirePointTurret : Turret
                 if (projectile1 != null)
                 {
                     projectile1.Initialize(gameObject, statManager, true);
-                    projectileManager.ApplyEffects(projectile1);
+                    projectileManager.InitializeModules(projectile1);
                 }
                 else
                 {
                     Debugger.Log(Debugger.AlertType.Warning, $"{name} tried to init. projectile but the script was not found!");
                 }
 
-                yield return new WaitForSeconds(timeBetweenConsecutiveShot);
+                if(timeBetweenConsecutiveShot <= 0)
+                {
+                    yield return new WaitForSeconds(timeBetweenConsecutiveShot);
+                } else
+                {
+                    continue;
+                }
+                
             }
         }
     }

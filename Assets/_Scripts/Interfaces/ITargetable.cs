@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IProjectileMovement
+public interface ITargetable 
 {
-    void MoveProjectile();
+    bool IsTargetable();
 }

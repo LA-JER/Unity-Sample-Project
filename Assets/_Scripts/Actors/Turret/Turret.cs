@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Targeting;
 using static StatManager;
+using Unity.VisualScripting;
 
 public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 {
@@ -32,13 +33,20 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     private float totalDamageDealt = 0;
     private int totalKills = 0;
     private int totalSpent = 0;
+    private bool isPaused = false;
 
     private void Awake()
     {
         DamageElement.OnDamageDealt += DamageDealer_OnDamageDealt;
         Enemy.OnEnemyKilled += Enemy_OnEnemyDeath;
         UpgradeDisplay.OnBuyUpgrade += UpgradeDisplay_OnBuyUpgrade;
+        //GameManager.OnPaused += GameManager_OnPaused;
         totalSpent += price;
+    }
+
+    private void GameManager_OnPaused(bool isPaused)
+    {
+        this.isPaused = isPaused;
     }
 
     private void UpgradeDisplay_OnBuyUpgrade(GameObject owner, UpgradeNode chosenUpgrade)
@@ -86,7 +94,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     // Update is called once per frame
     void Update()
     {
-        if (isActivated)
+        if (isActivated && GameManager.Instance.GetIsGamePaused() == false)
         {
             AimAndFire();
         }
@@ -113,12 +121,20 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
             if (targets != null && targets.Count > 0)
             {
                 RotateAim(targets[0]);
+
+                float fireRate = statManager.GetStat(Stat.fireRate);
+
+                //special case if fireRate was reduced to zero
+                if ( fireRate <= 0)
+                {
+                    return;
+                }
+
                 // Fire at the targetsInRange if countdown reaches zero
                 if (fireCountdown <= 0f)
                 {
                     OnTurretShoot?.Invoke();
                     StartCoroutine(Shoot(targets));
-                    float fireRate = statManager.GetStat(Stat.fireRate);
                     fireCountdown = 1f / fireRate;
                 }
 
@@ -155,16 +171,24 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     public abstract IEnumerator Shoot(List<Transform> targets);
 
     // Handles enemy entering tower's range
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
-
-            if (targetsInRange.Contains(collision.transform) == false)
+            ITargetable targetable = collision.GetComponent<ITargetable>();
+            if(targetable != null)
             {
-                targetsInRange.Add(collision.transform);
+                if (targetable.IsTargetable())
+                {
+                    if (targetsInRange.Contains(collision.transform) == false)
+                    {
+                        targetsInRange.Add(collision.transform);
+                    }
+                }
+                
             }
+            
 
 
         }
@@ -176,9 +200,17 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
-            if (targetsInRange.Contains(collision.transform))
+            ITargetable targetable = collision.GetComponent<ITargetable>();
+            if (targetable != null)
             {
-                targetsInRange.Remove(collision.transform);
+                if (targetable.IsTargetable())
+                {
+                    if (targetsInRange.Contains(collision.transform) )
+                    {
+                        targetsInRange.Remove(collision.transform);
+                    }
+                }
+
             }
         }
     }
@@ -214,6 +246,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         DamageElement.OnDamageDealt -= DamageDealer_OnDamageDealt;
         Enemy.OnEnemyKilled -= Enemy_OnEnemyDeath;
         UpgradeDisplay.OnBuyUpgrade -= UpgradeDisplay_OnBuyUpgrade;
+        //GameManager.OnPaused -= GameManager_OnPaused;
     }
 
     public int GetTotalSpent()

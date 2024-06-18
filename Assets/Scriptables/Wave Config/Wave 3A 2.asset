@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Wave 3A 2
   m_EditorClassIdentifier: 
   waveNumber: 3
-  duration: 60
-  timeBetweenSpawns: 1.35
+  duration: 30
+  timeBetweenSpawns: 1.25
   weightTable:
     _serializedList:
     - Key: {fileID: 7813661780438562106, guid: 24af48143b211ac45b79eac84ff66f2d, type: 3}

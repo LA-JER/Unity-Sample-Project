@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Enemy : MonoBehaviour, IHoverInfo
+public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
 {
     public delegate void EnemyDeathHandler(GameObject killer, EnemyRank rank, int value);
     public static event EnemyDeathHandler OnEnemyKilled;
@@ -24,41 +24,88 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
     public Rigidbody2D rb;
     private Health health;
     public  StatManager statManager;
-    private float deathLingerDuration = .25f;
+    public float deathLingerDuration = .25f;
+    public float  distanceThreshold = 0.05f;
+    private bool setsTargetsItself = true;
+    private bool isTargetable = true;
 
-    private void Awake()
+    private void Start()
     {
-        waypoints = EnemyPathManager.Instance.GetWayPoints();
+        
         Initialize();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Move();
+        if (!GameManager.Instance.GetIsGamePaused())
+        {
+            Move();
+        } else
+        {
+            rb.velocity = Vector3.zero;
+        }
+        
     }
 
-    
-    public abstract void Move();
+    //moves toward the first Transform if the List "Targets",
+    //when it reaches its target, begins moving towards the next target
+
+    public virtual void Move()
+    {
+        if (waypoints.Count > 0 && rb != null)
+        {
+            Vector2 direction = (waypoints[0].position - transform.position).normalized;
+            //Vector2 direction = (new Vector2(target.position.x, target.position.y) - GetRigidbody2D().position).normalized;
+            rb.velocity = (direction * statManager.GetStat(StatManager.Stat.moveSpeed));
+            //GetRigidbody2D().MovePosition(GetRigidbody2D().position *  direction);
+            //check if the object is close enough to the waypoint
+            if (Vector2.Distance(transform.position, waypoints[0].position) <= distanceThreshold)
+            {
+
+                waypoints.RemoveAt(0);
+            }
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision != null )
         {
-            if(collision.CompareTag("Home")) 
+            if(!GameManager.Instance.GetIsGamePaused())
             {
-                OnBaseCollide(collision);
+                if (collision.CompareTag("Home"))
+                {
+                    OnBaseCollide(collision);
 
-            } else if(collision.CompareTag("Turret"))
-            {
-                
+                }
+                else if (collision.CompareTag("Turret"))
+                {
+
                     OnTurretCollide(collision);
-                
-            } else if(collision.CompareTag("Enemy"))
-            {
-                OnEnemyCollide(collision);
-            }
 
+                }
+                else if (collision.CompareTag("Enemy"))
+                {
+                    OnEnemyCollide(collision);
+                }
+
+                if (collision.CompareTag("TargetingBlocker"))
+                {
+                    isTargetable = false;
+                }
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision != null)
+        {
+            if (collision.CompareTag("TargetingBlocker"))
+            {
+                isTargetable = true;
+            }
         }
     }
 
@@ -68,6 +115,11 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
 
     void Initialize()
     {
+        if(setsTargetsItself)
+        {
+            waypoints = EnemyPathManager.Instance.GetWayPoints();
+        }
+
         statManager = GetComponent<StatManager>();
         if (statManager == null)
         {
@@ -85,6 +137,23 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
             Debugger.Log(Debugger.AlertType.Warning, $"{name} coud not find its attached Health! Did you forget to add the component?");
         }
         health.onHealthZero += OnHealthZero;
+        //GameManager.OnPaused += GameManager_OnPaused;
+    }
+
+    private void GameManager_OnPaused(bool isPaused)
+    {
+        //this.isPaused = isPaused;
+        rb.velocity = Vector3.zero;
+    }
+
+    public bool IsTargetable()
+    {
+        return isTargetable;
+    }
+
+    public void SetTargetsItself(bool setsItself)
+    {
+        setsTargetsItself = setsItself;
     }
 
     public void AddTarget(Transform target)
@@ -92,7 +161,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
         waypoints.Add(target);
     }
 
-    public void AddTargets(List<Transform> newTargets)
+    public void SetPath(List<Transform> newTargets)
     {
         foreach(Transform t in newTargets)
         {
@@ -112,6 +181,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo
     private void OnDestroy()
     {
         health.onHealthZero -= OnHealthZero;
+        //GameManager.OnPaused -= GameManager_OnPaused;
     }
 
     public string GetName()

@@ -42,7 +42,7 @@ public class EndScreen : MonoBehaviour
     {
         title.text = message;
         totalKills.text = kills.ToString();
-        totalDamage.text = damage.ToString();
+        totalDamage.text = NumberShorthand.FormatNumber(damage);
         totalSpent.text = spent.ToString();
         totalElapsedTime.text = FormatTime(elapsed);
         screen.SetActive(true);

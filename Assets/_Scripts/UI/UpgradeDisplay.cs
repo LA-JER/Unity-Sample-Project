@@ -87,6 +87,7 @@ public class UpgradeDisplay : MonoBehaviour
 
             sell.text = $"SELL : {NumberShorthand.FormatNumber(adjustedRefund)}";
         }
+        ShowCurrentTargetingStyle();
     }
 
     private void UpdateUpgrades(List<UpgradeNode> upgradeNodes)

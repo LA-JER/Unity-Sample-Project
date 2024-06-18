@@ -31,7 +31,7 @@ public static class NumberShorthand
         }
         else
         {
-            return num.ToString();
+            return ((int)num).ToString();
         }
     }
 }

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SNP B 2
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
-  upgradeName: Dynamite Arrows
+  upgradeName: Dynamite
   upgradeDescription: Arrows explode on hit
-  price: 80
+  price: 60
   statDictionary:
     _serializedList: []
   spriteGroup:
@@ -24,9 +24,9 @@ MonoBehaviour:
       - Key: 2
         Value: {fileID: 0}
       - Key: 1
-        Value: {fileID: 21300000, guid: c75f4a458ffe6794796b1010c11f95fe, type: 3}
+        Value: {fileID: 21300000, guid: e54b06f31a5738047bdd2ea93233efe3, type: 3}
       - Key: 0
         Value: {fileID: 0}
   nextUpgrades: []
-  hitEffects:
-  - {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}
+  projectileModules:
+  - {fileID: 1317322943348122043, guid: 63b8fa76caedebc4d96849b673ba5cb4, type: 3}

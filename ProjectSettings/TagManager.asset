@@ -9,6 +9,7 @@ TagManager:
   - Path
   - Home
   - TurretSpace
+  - TargetingBlocker
   layers:
   - Default
   - TransparentFX

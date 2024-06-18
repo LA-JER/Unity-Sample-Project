@@ -8,7 +8,9 @@ using AYellowpaper.SerializedCollections;
 
 public class BuffManager : MonoBehaviour
 {
-    
+    public delegate void BuffApply(int buffID, bool isActive);
+    public event BuffApply OnBuffApply;
+
     //private Dictionary<int, Buff> buffs = new Dictionary<int, Buff>();
     [SerializedDictionary("ID", "Buff")]
     public SerializedDictionary<int, Buff> buffs = new SerializedDictionary<int, Buff>();
@@ -20,62 +22,40 @@ public class BuffManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        
-
-        //Item.OnEquipmentReady += Equipment_OnEquipmentReady;
-       // OnEquipmentRevoke += BuffManager_OnEquipmentRevoke;
-       // Upgrade.OnUpgradeReady += Upgrade_OnUpgradeReady;
-        //XPManager.onLevelUp += XPManager_onLevelUp;
     }
 
     private void Start()
     {
         statManager = GetComponent<StatManager>();
+        
         InitializeBaseStats();
     }
 
 
-    /*
-    private void Equipment_OnEquipmentReady(Item source, IHoverInfo owner, int ID, Stat targetStat, Item.Operation operation, float modifier, int maxStacks, float duration = -1)
+    public void ApplyPermanentBuff(Stat targetStat, Item.Operation operation, float value)
     {
-        if (statManager != null && actor != null)
+        
+        if (!statManager.HasStat(targetStat))
         {
-            // Debug.Log($"checking if {actor} is = {owner}");
-            if (actor == owner && baseStats.ContainsKey(targetStat))
-            {
-                //determine if this is a temporary buff (effectDuration > 0) or permanent (effectDuration <= 0)
-                if (duration > 0)
-                {
-                    ApplyTimedBuff(ID, targetStat, operation, modifier, maxStacks, duration);
-                }
-                else
-                {
-                    ApplyPermanentBuff(targetStat, operation, modifier);
-                }
-
-                //Debug.Log($"Applied {operation} {modifier} on {stat} on {gameObject}");
-            }
-
-
-        }
-    }*/
-
-
-
-    public void ApplyPermanentBuff(Stat targetStat, Item.Operation operation, float modifier)
-    {
+            statManager.AddStat(targetStat, value);
+        } 
         float oldVal = statManager.GetStat(targetStat);
 
         if (operation == Item.Operation.Multiplicative)
         {
-            statManager.UpdateStat(targetStat, oldVal * modifier);
+            statManager.UpdateStat(targetStat, oldVal * value);
 
             UpdateBaseStats(targetStat);
 
         }
         else if (operation == Item.Operation.Additive)
         {
-            statManager.UpdateStat(targetStat, oldVal + modifier);
+            statManager.UpdateStat(targetStat, oldVal + value);
+            UpdateBaseStats(targetStat);
+        }
+        else if (operation == Item.Operation.Set)
+        {
+            statManager.UpdateStat(targetStat, value);
             UpdateBaseStats(targetStat);
         }
 
@@ -147,10 +127,15 @@ public class BuffManager : MonoBehaviour
             if (!buffs.ContainsKey(newBuff.ID))
             {
                 buffs.Add(newBuff.ID, newBuff);
+                OnBuffApply?.Invoke(newBuff.ID, true);
             }
             if (buffs[newBuff.ID].currentStacks < newBuff.maxStacks)
             {
                 buffs[newBuff.ID].currentStacks++;
+                //OnBuffApply?.Invoke(newBuff.ID, true);
+            } else
+            {
+                yield return null;
             }
 
             //since buffs can modify multiple stats, ensure we recalculate each stat
@@ -174,7 +159,9 @@ public class BuffManager : MonoBehaviour
                 else
                 {
                     buffs.Remove(newBuff.ID);
+                    OnBuffApply?.Invoke(newBuff.ID, false);
                 }
+
 
             }
 
@@ -186,6 +173,7 @@ public class BuffManager : MonoBehaviour
 
 
         }
+        yield return null;
     }
 
     //Applies additive buffs before multiplicative buffs for a specific stat
@@ -210,6 +198,7 @@ public class BuffManager : MonoBehaviour
         //distinguish between buffs that are added vs multiplied
         List<Buff> additiveBuffs = new List<Buff>();
         List<Buff> mulitplyBuffs = new List<Buff>();
+        List<Buff> setBuffs = new List<Buff>();
 
         foreach (Buff buff in buffs.Values)
         {
@@ -224,6 +213,11 @@ public class BuffManager : MonoBehaviour
                     else if (buff.affectedStats[stat].operation == Item.Operation.Additive)
                     {
                         additiveBuffs.Add(buff);
+                    }
+                    else if (buff.affectedStats[stat].operation == Item.Operation.Set)
+                    {
+                        setBuffs.Add(buff);
+                        Debugger.Log(Debugger.AlertType.Error, "Set buff with duration not supported!");
                     }
                 }
             }
@@ -246,6 +240,7 @@ public class BuffManager : MonoBehaviour
             baseVal *= buff.affectedStats[stat].modifier;
             newVal = baseVal;
         }
+        
 
         statManager.UpdateStat(stat, newVal);
     }

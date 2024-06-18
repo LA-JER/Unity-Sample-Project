@@ -8,13 +8,16 @@ public class Projectile : DamageElement
     private Transform target;
     private StatManager statManager;
     public List<GameObject> effects = new List<GameObject>();
-    private IProjectileMovement projectileMovement;
+    public Collider2D hurtBox;
+    public ProjectileMovement projectileMovement;
     private string enemyTag = "Enemy";
     private int pierced = 0;
+    public Rigidbody2D rb;
 
     private void Awake()
     {
-        projectileMovement = GetComponent<IProjectileMovement>();
+        //projectileMovement = GetComponent<ProjectileMovement>();
+        rb = GetComponent<Rigidbody2D>();
         statManager = GetComponent<StatManager>();
         if (statManager == null)
         {
@@ -33,17 +36,24 @@ public class Projectile : DamageElement
     // Update is called once per frame
     void Update()
     {
+        // Move the projectile forward
+        if (projectileMovement == null)
+        {
+            transform.Translate(Vector2.up * statManager.GetStat(Stat.projectileSpeed) * Time.deltaTime);
+        }
+        
+        
+            
+        
+    }
+
+    private void FixedUpdate()
+    {
         if (projectileMovement != null)
         {
             projectileMovement.MoveProjectile();
         }
-        // Move the projectile forward
-        else
-        {
-            transform.Translate(Vector2.up * statManager.GetStat(Stat.projectileSpeed) * Time.deltaTime);
-        }
     }
-
 
     public override void Initialize(GameObject source, StatManager other, bool setSizeAtStart = false)
     {
@@ -67,12 +77,11 @@ public class Projectile : DamageElement
             this.source = source;
         }
     }
-
     // If the projectile collides with an enemy, deal damage and destroy the projectile unless
     // the projectile can pierce more targets
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void OnHurtBoxEntered(Collider2D collision)
     {
-        if (collision != null && !collision.isTrigger)
+        if (collision != null)
         {
             if (collision.CompareTag(enemyTag))
             {
@@ -103,6 +112,7 @@ public class Projectile : DamageElement
         }
     }
 
+
     public void AddEffect(GameObject effect)
     {
         if(effect != null)
@@ -126,6 +136,10 @@ public class Projectile : DamageElement
             }
             
         }
+    }
+    public float GetStat(Stat stat)
+    {
+        return statManager.GetStat(stat);
     }
 
 

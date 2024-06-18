@@ -10,12 +10,15 @@ public class UpgradeNode : Upgrade
 {
     public TurretSpriteGroup spriteGroup;
     public List<UpgradeNode> nextUpgrades = new List<UpgradeNode>();
-    public List<GameObject> hitEffects = new List<GameObject>();
+    [Tooltip("Works with Projectile Movements (max 1) and Projectile Hit Effects (no max)")]
+    public List<GameObject> projectileModules = new List<GameObject>();
 
     public override void ApplyUpgrade(GameObject owner)
     {
         if(owner != null)
         {
+
+            //applies the stat changes
             BuffManager buffManager = owner.GetComponent<BuffManager>();
             if(buffManager != null)
             {
@@ -28,13 +31,13 @@ public class UpgradeNode : Upgrade
                 
             }
 
+            //adds new modules tothe projectile, such as movement type and hit effects
             ProjectileManager projectileManager = owner.GetComponent<ProjectileManager>();
             if(projectileManager != null)
             {
-                foreach(GameObject effect in hitEffects)
-                {
-                    projectileManager.AddNewEffect(effect);
-                }
+                
+                 projectileManager.AddNewModules(projectileModules);
+                
             }
 
             SpriteManager spriteManager = owner.GetComponent<SpriteManager>();

@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: 0}
   upgradeName: Sharp Shards
-  upgradeDescription: Increases DMG slightly
+  upgradeDescription: 'Increases RANGE '
   price: 7
   statDictionary:
     _serializedList:
-    - Key: 1
+    - Key: 12
       Value:
         operation: 0
-        modifier: 1
+        modifier: 3
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -30,4 +30,4 @@ MonoBehaviour:
   nextUpgrades:
   - {fileID: 11400000, guid: eda9ab5309178004c9ca676ce48c7310, type: 2}
   - {fileID: 11400000, guid: 304630baa984cfc44bd7700471a08820, type: 2}
-  hitEffects: []
+  projectileModules: []

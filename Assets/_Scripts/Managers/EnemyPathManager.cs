@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class EnemyPathManager : MonoBehaviour
 {
@@ -149,6 +150,49 @@ public class EnemyPathManager : MonoBehaviour
         {
             list.Add(t);
         }
+
+        return list;
+    }
+
+    public List<Transform> GetClosestWayPoints(Vector2 position)
+    {
+        if (waypoints == null || waypoints.Count == 0)
+        {
+            return null;  // Handle empty list case
+        }
+
+        //find the next transform
+        Transform closestTransform = waypoints[0];
+        int closestIndex = waypoints.Count;
+        float closestDistanceSqr = Mathf.Infinity;
+
+        for (int i = 0; i < waypoints.Count; i++)
+        {
+            if (waypoints[i] == null)
+            {
+                continue;  // Skip null transforms in the list
+            }
+
+            // Calculate distance squared (avoids unnecessary square root)
+            float distanceSqr = Vector2.SqrMagnitude(position - (Vector2)waypoints[i].position);  // Cast to Vector2
+
+            if (waypoints[i].position.x > position.x && distanceSqr < closestDistanceSqr)
+            {
+                closestIndex = i;
+                closestDistanceSqr = distanceSqr;
+                closestTransform = waypoints[i];
+            }
+        }
+        //Debugger.Log(Debugger.AlertType.Info, $"Next closest tranform to {position} is {closestTransform.position}");
+
+        List<Transform> list = new List<Transform>();
+        for (int i = closestIndex; i < waypoints.Count; i++)
+        {
+            if (waypoints[i] == null) continue;
+
+            list.Add(waypoints[i]);   
+        }
+
 
         return list;
     }

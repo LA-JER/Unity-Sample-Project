@@ -6,24 +6,50 @@ using UnityEngine;
 public class ProjectileManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> effectPrefabs = new List<GameObject>();
+    [SerializeField] private GameObject projectileMovementPrefab;
 
-    public void AddNewEffect(GameObject effectPrefab)
+    public void AddNewModules(List<GameObject> prefabs)
     {
-        if(effectPrefab != null)
+        if(prefabs != null)
         {
-            ProjectileHitEffect effect = effectPrefab.GetComponent<ProjectileHitEffect>(); 
-            //check to make sure this is indeed a hit effect
-            if(effect != null)
+            foreach(GameObject prefab in prefabs)
             {
-                if (!effectPrefabs.Contains(effectPrefab))
+                if (prefab.GetComponent<ProjectileHitEffect>() != null)
                 {
-                    effectPrefabs.Add(effectPrefab);
+                    
+                    ProjectileHitEffect effect = prefab.GetComponent<ProjectileHitEffect>();
+                    //check to make sure this is indeed a hit effect
+                    if (effect != null)
+                    {
+                        if (!effectPrefabs.Contains(prefab))
+                        {
+                            effectPrefabs.Add(prefab);
+                        }
+                    }
+                } else if(prefab.GetComponent<ProjectileMovement>() != null)
+                {
+                    ProjectileMovement move = prefab.GetComponent<ProjectileMovement>();
+                    //check to make sure this is indeed a hit effect
+                    if (move != null)
+                    {
+                        if (projectileMovementPrefab == null)
+                        {
+                            projectileMovementPrefab = prefab;
+                        } else
+                        {
+                            Debugger.Log(Debugger.AlertType.Warning, "Tried to set a projectile movement but one was already. Are you sure this is intended?");
+                        }
+                    }
                 }
+                
             }
+
+
+            
         }
     }
 
-    public void ApplyEffects(Projectile projectile)
+    public void InitializeModules(Projectile projectile)
     {
         if(projectile != null)
         {
@@ -32,6 +58,21 @@ public class ProjectileManager : MonoBehaviour
                 GameObject effectInstance = Instantiate(prefab, projectile.transform);
                 projectile.AddEffect(effectInstance);
             }
+
+            if(projectileMovementPrefab != null)
+            {
+                GameObject instance = Instantiate(projectileMovementPrefab, projectile.transform);
+                ProjectileMovement projectileMovement = instance.GetComponent<ProjectileMovement>();
+                if(projectileMovement != null)
+                {
+                    projectile.projectileMovement = projectileMovement;
+                    projectileMovement.projectile = projectile;
+                }
+
+                
+            }
         }
+
+
     }
 }
