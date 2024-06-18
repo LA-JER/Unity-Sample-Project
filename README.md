@@ -14,3 +14,10 @@ This project is a simple 2D tower defense game developed in Unity. The primary o
 - **Upgradeable Towers**: Towers can be upgraded to enhance their capabilities. 
 - **Various Enemy Types**: Different enemies with unique attributes.
 - **Basic UI**: Interface to manage game elements like health, currency, and tower upgrades.
+
+## Installation
+If you would like to play directly without the use of the Unity Editor, consider downloading the demo directly :
+https://drive.google.com/drive/folders/1PpOETb2_cX0yBKxNZIuRkr5oQEmK2ouR?usp=sharing
+
+INSTRUCTIONS: 
+Download the zip, extract, then run the executable 
