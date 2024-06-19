@@ -14,7 +14,8 @@ This project is a simple 2D tower defense game developed in Unity. The primary o
 - **Basic UI**: Interface to manage game elements like health, currency, and tower upgrades.
 ## Stat Management:
 
-**StatManager**:
+**StatManager**: 
+This Tower Defense game is built on a robust and extensible stat and buff system, enabling dynamic and flexible gameplay enhancements. The core architecture revolves around a StatManager and BuffManager, which together facilitate seamless stat modifications for projectiles, turrets, and enemies.
  - Manages various stats (e.g., health, damage, speed) for game objects.
  - Provides methods to add, update, and retrieve stats, ensuring consistent and centralized stat handling.
  - Serialized Stats: Uses serialized dictionaries to store stats, allowing for easy customization and scalability through the Unity Editor.
