@@ -14,8 +14,8 @@ This project is a simple 2D tower defense game developed in Unity. The primary o
 - **Basic UI**: Interface to manage game elements like health, currency, and tower upgrades.
 
 ## Installation
-If you would like to play directly without the use of the Unity Editor, consider downloading the demo directly :
-https://drive.google.com/drive/folders/1PpOETb2_cX0yBKxNZIuRkr5oQEmK2ouR?usp=sharing
+If you would like to play directly without the use of the Unity Editor, you can play it directly on (https://la-jer.itch.io/tower-defense-demo)itch here!
+
 
 INSTRUCTIONS: 
 Download the zip, extract, then run the executable 
