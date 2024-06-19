@@ -12,10 +12,17 @@ This project is a simple 2D tower defense game developed in Unity. The primary o
 - **Upgradeable Towers**: Towers can be upgraded to enhance their capabilities. 
 - **Various Enemy Types**: Different enemies with unique attributes.
 - **Basic UI**: Interface to manage game elements like health, currency, and tower upgrades.
+## Stat Management:
 
-## Installation
+StatManager: Manages various stats (e.g., health, damage, speed) for game objects. Provides methods to add, update, and retrieve stats, ensuring consistent and centralized stat handling.
+Serialized Stats: Uses serialized dictionaries to store stats, allowing for easy customization and scalability through the Unity Editor.
+Buff System:
+
+BuffManager: Handles the application of temporary and permanent buffs. Buffs can modify stats through additive, multiplicative, or set operations.
+Timed Buffs: Supports buffs with durations, applying their effects for a specified time before automatically removing them.
+Event-Driven: Utilizes events to notify other systems when buffs are applied or removed, promoting a decoupled and flexible architecture.
+
+## Play Now!
 If you would like to play directly without the use of the Unity Editor, you can play it directly on ([itch here](https://la-jer.itch.io/tower-defense-demo))!
 
 
-INSTRUCTIONS: 
-Download the zip, extract, then run the executable 
