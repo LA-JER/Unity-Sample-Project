@@ -14,12 +14,12 @@ This project is a simple 2D tower defense game developed in Unity. The primary o
 - **Basic UI**: Interface to manage game elements like health, currency, and tower upgrades.
 ## Stat Management:
 
-#StatManager:
+**StatManager**:
  - Manages various stats (e.g., health, damage, speed) for game objects.
  - Provides methods to add, update, and retrieve stats, ensuring consistent and centralized stat handling.
  - Serialized Stats: Uses serialized dictionaries to store stats, allowing for easy customization and scalability through the Unity Editor.
    
-#Buff System:
+**Buff System**:
 - BuffManager: Handles the application of temporary and permanent buffs. Buffs can modify stats through additive, multiplicative, or set operations.
 - Timed Buffs: Supports buffs with durations, applying their effects for a specified time before automatically removing them.
 - Event-Driven: Utilizes events to notify other systems when buffs are applied or removed, promoting a decoupled and flexible architecture.
