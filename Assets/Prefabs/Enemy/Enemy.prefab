@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 2905733720565282491}
   - component: {fileID: 4375477006173433062}
   - component: {fileID: 2962797203385577161}
-  - component: {fileID: 4267386750213956346}
   - component: {fileID: 1008466734510862572}
   m_Layer: 0
   m_Name: Enemy
@@ -178,45 +177,6 @@ MonoBehaviour:
   buffTimeLeft:
     _serializedList: []
   baseStats:
-    _serializedList: []
---- !u!114 &4267386750213956346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2655534612356125623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bd164fef1efeb648b9dcba6b060867e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SFXSource: {fileID: 4347940487678079781}
-  shootSFX:
-    soundType: 0
-    audioClip: {fileID: 0}
-    randomPitch: 0
-    minPitch: 0.95
-    maxPitch: 1.07
-  criticalHurt:
-    soundType: 0
-    audioClip: {fileID: 8300000, guid: 0c8a763d8fe5eea449cc13e86e28209e, type: 3}
-    randomPitch: 1
-    minPitch: 0.95
-    maxPitch: 1.07
-  hurtSFX:
-    soundType: 0
-    audioClip: {fileID: 8300000, guid: 1d5e10de36f94cd4e91c8c1163e76330, type: 3}
-    randomPitch: 1
-    minPitch: 0.95
-    maxPitch: 1.07
-  dieSFX:
-    soundType: 0
-    audioClip: {fileID: 8300000, guid: 8ec1a3bb513d6034c84997139df839a5, type: 3}
-    randomPitch: 1
-    minPitch: 0.95
-    maxPitch: 1.07
-  buffSFX:
     _serializedList: []
 --- !u!114 &1008466734510862572
 MonoBehaviour:

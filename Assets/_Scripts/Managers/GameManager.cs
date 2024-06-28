@@ -41,8 +41,8 @@ public class GameManager : MonoBehaviour
         CurrencyManager.onRefund += CurrencyManager_onRefund;
         Enemy.OnEnemyKilled += Enemy_OnEnemyDeath;
         WaveManager.OnAllEnemiesKilled += GameWon;
-        AlertManager.OnAlert += Pause;
-        PauseMenu.onWorldStop += Pause;
+        AlertManager.OnAlert += FullyPause;
+        PauseMenu.onWorldStop += PretendPause;
 
         StartCoroutine(RealTimeElapsed());
     }
@@ -57,12 +57,20 @@ public class GameManager : MonoBehaviour
         currencySpent += purchase;
     }
 
-    private void Pause(bool isShown)
+    private void FullyPause(bool isShown)
     {
       
         OnPaused?.Invoke(isShown);
         isGamePaused = isShown;
        
+
+    }
+    private void PretendPause(bool isShown)
+    {
+
+        //OnPaused?.Invoke(isShown);
+        isGamePaused = isShown;
+
 
     }
 
@@ -131,8 +139,8 @@ public class GameManager : MonoBehaviour
         CurrencyManager.onRefund -= CurrencyManager_onRefund;
         Enemy.OnEnemyKilled -= Enemy_OnEnemyDeath;
         WaveManager.OnAllEnemiesKilled -= GameWon;
-        AlertManager.OnAlert -= Pause;
-        PauseMenu.onWorldStop -= Pause;
+        AlertManager.OnAlert -= FullyPause;
+        PauseMenu.onWorldStop -= PretendPause;
     }
 
     public bool IsGamePaused()

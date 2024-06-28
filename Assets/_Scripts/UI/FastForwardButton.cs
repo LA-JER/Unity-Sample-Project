@@ -4,31 +4,46 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class FastForwardButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class FastForwardButton : MonoBehaviour
 {
     public delegate void SpeedChange();
     public static event SpeedChange OnFastForward;
     public static event SpeedChange OnNormal;
+    public static event SpeedChange OnFail;
 
     //private bool m_IsPointerDown = false;
     private float originalSpeed = 0f;
+    private bool toggle = false;
 
-    public void OnPointerDown(PointerEventData eventData)
+    private void Start()
     {
-        originalSpeed = Time.timeScale;
-        //m_IsPointerDown = true;
-        FastForward();
+        
     }
 
-    public void OnPointerUp(PointerEventData eventData)
+    public void ToggleSpeed()
     {
-       // m_IsPointerDown = false;
-        ReturnToNormal();
+        if (Time.timeScale == 0)
+        {
+            OnFail?.Invoke();
+            return;
+        }
+
+        toggle = !toggle;
+        if(toggle)
+        {
+            FastForward();
+        } else
+        {
+            ReturnToNormal();
+        }
+        
     }
 
 
     private void FastForward()
     {
+        
+        originalSpeed = Time.timeScale;
         Time.timeScale = 2f * originalSpeed;
         OnFastForward?.Invoke();
 

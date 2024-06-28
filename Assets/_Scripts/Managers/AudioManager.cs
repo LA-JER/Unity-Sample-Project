@@ -24,11 +24,15 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private SoundEfect placeSucess;
     [SerializeField] private SoundEfect waveStart;
     [SerializeField] private SoundEfect BGM;
-    [SerializeField] private SoundEfect enemyDeath;
+    [SerializeField] private SoundEfect enemyHit;
+    [SerializeField] private SoundEfect enemyCriticalHit;
     [SerializeField] private SoundEfect gameOverSFX;
     [SerializeField] private SoundEfect gameWinSFX;
     [SerializeField] private SoundEfect fastForwardSFX;
+    [SerializeField] private SoundEfect stopSFX;
 
+    private bool isFastForwarding = false;
+    private bool isWorldStopped = false;
 
     private void Awake()
     {
@@ -44,22 +48,74 @@ public class AudioManager : MonoBehaviour
         Shop.OnTryBuy += Shop_OnTryBuy;
         Shop.OnTryPlace += Shop_OnTryPlace;
         Shop.OnRefund += Shop_OnRefund;
-        WaveManager.OnWaveStart += WaveManager_OnWaveStart;
+        ContinueButton.OnContinue += ContinueButton_OnContinue;
         PauseMenu.onPauseToggle += PauseMenu_onPauseToggle;
-        //Enemy.OnEnemyDeath += Enemy_OnEnemyDeath;
+        PauseMenu.onWorldStop += PauseMenu_onWorldStop;
+        Health.onHurt += Health_onHurt;
         GameManager.OnGameEnd += Base_OnBaseDie;
         FastForwardButton.OnFastForward += FastForwardButton_OnFastForward;
         FastForwardButton.OnNormal += FastForwardButton_OnNormal;
+        FastForwardButton.OnFail += FastForwardButton_OnFail;
+    }
+
+    private void PauseMenu_onWorldStop(bool isPaused)
+    {
+        if (isPaused)
+        {
+            if (isFastForwarding)
+            {
+                StopSound(fastForwardSFX);
+            }
+            musicSource.Pause();
+            isWorldStopped = true;
+        } else
+        {
+            if (isFastForwarding)
+            {
+                PlaySound(fastForwardSFX, true);
+            }
+            isWorldStopped = false;
+            PlaySound(BGM, true);
+        }
+        PlaySound(stopSFX);
+
+    }
+
+    private void FastForwardButton_OnFail()
+    {
+        PlaySound(buyFail);
+    }
+
+    private void ContinueButton_OnContinue()
+    {
+        PlaySound(waveStart);
+    }
+
+    private void Health_onHurt(GameObject obj, bool isCritical)
+    {
+        if(obj.GetComponent<Enemy>() != null)
+        {
+            if (isCritical)
+            {
+                PlaySound(enemyCriticalHit);
+            } else
+            {
+                PlaySound(enemyHit);
+            }
+            
+        }
     }
 
     private void FastForwardButton_OnNormal()
     {
         StopSound(fastForwardSFX);
+        isFastForwarding = false;
     }
 
     private void FastForwardButton_OnFastForward()
     {
         PlaySound(fastForwardSFX, true);
+        isFastForwarding = true;
     }
 
     private void Base_OnBaseDie(bool win)
@@ -84,7 +140,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            musicSource.Play();
+            PlaySound(BGM, true);
         } 
         
     }
@@ -96,11 +152,7 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        PlaySound(BGM);
-    }
-    private void WaveManager_OnWaveStart(WaveGroup wave, bool h)
-    {
-        PlaySound(waveStart);
+        PlaySound(BGM, true);
     }
 
     private void UpgradeDisplay_OnTryBuy(bool successful)
@@ -192,7 +244,7 @@ public class AudioManager : MonoBehaviour
                 break;
             case SoundType.Music:
                 musicSource.Stop();
-                musicSource.loop = false;
+                //musicSource.loop = false;
                 break;
             default: break;
         }
@@ -206,12 +258,14 @@ public class AudioManager : MonoBehaviour
         Shop.OnTryBuy -= Shop_OnTryBuy;
         Shop.OnTryPlace -= Shop_OnTryPlace;
         Shop.OnRefund -= Shop_OnRefund;
-        WaveManager.OnWaveStart -= WaveManager_OnWaveStart;
+        ContinueButton.OnContinue -= ContinueButton_OnContinue;
         PauseMenu.onPauseToggle -= PauseMenu_onPauseToggle;
+        PauseMenu.onWorldStop -= PauseMenu_onWorldStop;
         //Enemy.OnEnemyDeath -= Enemy_OnEnemyDeath;
         GameManager.OnGameEnd -= Base_OnBaseDie;
         FastForwardButton.OnFastForward -= FastForwardButton_OnFastForward;
         FastForwardButton.OnNormal -= FastForwardButton_OnNormal;
+        FastForwardButton.OnFail -= FastForwardButton_OnFail;
     }
 
     [Serializable]

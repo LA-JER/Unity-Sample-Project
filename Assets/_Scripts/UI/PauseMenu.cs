@@ -56,9 +56,9 @@ public class PauseMenu : MonoBehaviour
         
         //Time.timeScale = shouldPaused ? 0f : previousTimeScale;
         toggle = !toggle;
+        //onPauseToggle?.Invoke(toggle);
         onWorldStop?.Invoke(toggle);
 
-        
     }
 
     public void ToggleDamageNumbers()

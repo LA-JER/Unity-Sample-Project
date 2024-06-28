@@ -13,6 +13,10 @@ public class Health : MonoBehaviour
     public event HealthChangeHandler onHealthDamage;
     public event HealthChangeHandler onHealthHeal;
 
+
+    public delegate void HurtHandler(GameObject obj, bool isCritical);
+    public static event HurtHandler onHurt;
+
     public delegate void DamageDraw(Vector3 position, float amount, bool isCritical);
     public static event DamageDraw OnDamageDraw;
 
@@ -34,6 +38,7 @@ public class Health : MonoBehaviour
 
             //Flag that this game object has taken damage
             onHealthDamage?.Invoke(damage, isCritical);
+            onHurt?.Invoke(gameObject, isCritical);
             OnDamageDraw?.Invoke(transform.position, damage, isCritical);
 
 
