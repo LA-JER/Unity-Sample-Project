@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2783765527699681590
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3181633548479538523, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: effectPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3181633548479538523, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: effectPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}
+    - target: {fileID: 3656926098505250096, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_Name
+      value: Ice Chance Proejctile Item Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371527719234756769, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5451915796523340208, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      propertyPath: shotsNeeded
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3656926098505250096, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7487913308652888878}
+  m_SourcePrefab: {fileID: 100100000, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+--- !u!1 &1468711237818172422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3656926098505250096, guid: e875fd3beae9a4940b086895c210a8e7, type: 3}
+  m_PrefabInstance: {fileID: 2783765527699681590}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7487913308652888878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1468711237818172422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2dfaa4ea7e6894682d389c98ad4a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chance: 0.2

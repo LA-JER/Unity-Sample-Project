@@ -12,8 +12,9 @@ public class ToolTipManager : MonoBehaviour
     public RectTransform view;
     public TextMeshProUGUI toolTipMainText;
     public TextMeshProUGUI toolTipTitleText;
-    public float xMinModifier = 0f;
-    public float xMaxModifier = .75f;
+    public float xOffset = 175f;
+    public float yOffset = 175f;
+
 
     private void Awake()
     {
@@ -33,6 +34,7 @@ public class ToolTipManager : MonoBehaviour
     {
         if(isCursorIn)
         {
+            AdjustAnchorPosition();
             ShowToolTip(position, name, desc);
         }
         else
@@ -49,7 +51,7 @@ public class ToolTipManager : MonoBehaviour
 
     private void Update()
     {
-        if (toolTip)
+        if (toolTip.activeSelf)
         {
             TrackPosition();
         }
@@ -61,16 +63,16 @@ public class ToolTipManager : MonoBehaviour
         if (toolTip != null)
         {
             
-                Vector2 screenPoint = Input.mousePosition;
-                Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
+            Vector2 screenPoint = Input.mousePosition;
+            //Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
 
-            toolTip.transform.position = clampedPoint + new Vector2(-2, 0);
-
+            //toolTip.transform.position = clampedPoint + new Vector2(-2, 0);
+            toolTip.transform.position = screenPoint;
             
         }
     }
 
-    public void ShowToolTip(Vector2 pos, string title, string mainText)
+    private void ShowToolTip(Vector2 pos, string title, string mainText)
     {
         if (toolTipMainText != null && toolTip != null)
         {
@@ -82,7 +84,7 @@ public class ToolTipManager : MonoBehaviour
         }
     }
 
-    public void HideToolTip()
+    private void HideToolTip()
     {
         if (toolTipMainText != null && toolTip != null)
         {
@@ -90,13 +92,27 @@ public class ToolTipManager : MonoBehaviour
         }
     }
 
-    Vector2 ClampToCanvasEdge(RectTransform view, Vector2 screenPoint)
+    void AdjustAnchorPosition()
     {
+        Vector2 adjustment = Vector2.zero;
+        Vector2 screenPoint = Input.mousePosition;
 
-        Vector3 max1 = displayCanvas.pixelRect.max;
-        screenPoint.x = Mathf.Clamp(screenPoint.x, 0 + (view.rect.size.x * xMinModifier), max1.x - (view.rect.size.y * xMaxModifier));
-        screenPoint.y = Mathf.Clamp(screenPoint.y, 0 , max1.y);
-        return screenPoint;
+        adjustment.x = IsPointOnRightSide(screenPoint) ? -xOffset :  xOffset;
+        adjustment.y = IsPointOnTopSide(screenPoint) ? -yOffset : yOffset;
+
+        view.anchoredPosition = adjustment;
+    }
+
+    private bool IsPointOnRightSide(Vector2 screenPoint)
+    {
+        float screenWidth = Screen.width;
+        return screenPoint.x > screenWidth / 2;
+    }
+
+    private bool IsPointOnTopSide(Vector2 screenPoint)
+    {
+        float screenHeight = Screen.height;
+        return screenPoint.y > screenHeight / 2;
     }
 
     private void OnDestroy()

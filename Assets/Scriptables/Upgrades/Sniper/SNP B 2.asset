@@ -12,12 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: SNP B 2
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -858058595, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Dynamite
   upgradeDescription: Arrows explode on hit
-  price: 60
+  price: 50
   statDictionary:
-    _serializedList: []
+    _serializedList:
+    - Key: 1
+      Value:
+        operation: 0
+        modifier: -3
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -28,5 +32,6 @@ MonoBehaviour:
       - Key: 0
         Value: {fileID: 0}
   nextUpgrades: []
-  projectileModules:
+  projectileModulesPrefabs:
   - {fileID: 1317322943348122043, guid: 63b8fa76caedebc4d96849b673ba5cb4, type: 3}
+  turretItemsPrefabs: []

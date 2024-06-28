@@ -1,19 +1,28 @@
+using AYellowpaper.SerializedCollections;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static ITargetable;
+using static Projectile;
 using static StatManager;
 
 public class Projectile : DamageElement
 {
+    public delegate void ProjectileHit(GameObject hit, DamageInstance damage);
+    public event ProjectileHit OnProjectileHit;
+
     private Transform target;
     private StatManager statManager;
-    public List<GameObject> effects = new List<GameObject>();
+
+    
     public Collider2D hurtBox;
     public ProjectileMovement projectileMovement;
     private string enemyTag = "Enemy";
     private int pierced = 0;
     public Rigidbody2D rb;
+    public float hurtSameEnemyCooldown = 2f;
 
+    private List<GameObject> hitObjects = new List<GameObject>();
     private void Awake()
     {
         //projectileMovement = GetComponent<ProjectileMovement>();
@@ -41,21 +50,24 @@ public class Projectile : DamageElement
         {
             transform.Translate(Vector2.up * statManager.GetStat(Stat.projectileSpeed) * Time.deltaTime);
         }
-        
-        
-            
-        
+
+        if (projectileMovement != null && !projectileMovement.usesFixedUpdate)
+        {
+            projectileMovement.MoveProjectile();
+        }
+
+
     }
 
     private void FixedUpdate()
     {
-        if (projectileMovement != null)
+        if (projectileMovement != null && projectileMovement.usesFixedUpdate)
         {
             projectileMovement.MoveProjectile();
         }
     }
 
-    public override void Initialize(GameObject source, StatManager other, bool setSizeAtStart = false)
+    public override void Initialize(GameObject source, StatManager other, Dictionary<PlayArea, bool> targetsCapable, bool setSizeAtStart = false)
     {
         //Debugger.Log(Debugger.AlertType.Info, $"Projectile.Initialize called with statManager {statManager} and other statManager: {other}");
         if (other != null)
@@ -76,67 +88,69 @@ public class Projectile : DamageElement
         {
             this.source = source;
         }
+        if(targetsCapable != null)
+        {
+            foreach (var capable in targetsCapable)
+            {
+                if (this.targetsCapable.ContainsKey(capable.Key))
+                {
+                    this.targetsCapable[capable.Key] = capable.Value;
+                }
+            }
+        }
     }
     // If the projectile collides with an enemy, deal damage and destroy the projectile unless
     // the projectile can pierce more targets
     public void OnHurtBoxEntered(Collider2D collision)
     {
-        if (collision != null)
+        if (collision == null) return;
+
+        if (!collision.CompareTag(enemyTag)) return;
+
+        //skip if we recently hit the same object
+        if (hitObjects.Contains(collision.gameObject)) return;
+
+        //get the targetable component
+        ITargetable targetable = collision.GetComponent<ITargetable>();
+        if (targetable == null) return;
+
+        if(CanTarget(targetable.GetPlayableArea()) == false) return;
+        
+
+        //deals damage to the health component
+        DamageInstance dmg = DealDamage(source, statManager, collision.gameObject);
+        OnProjectileHit?.Invoke(collision.gameObject, dmg);
+        DoEffects(collision.gameObject);
+
+        pierced++;
+
+        StartCoroutine(CoolDown(collision.gameObject));
+
+        if (dmg.isCritical && pierced <= statManager.GetStat(Stat.critBounce))
         {
-            if (collision.CompareTag(enemyTag))
-            {
-                // Get the maxHealth component of the enemy
-                Health health = collision.GetComponent<Health>();
-
-                // If the enemy has Health component, deal damage
-                if (health != null)
-                {
-                    //deals damage to the health component
-                    DamageInstance dmg = DealDamage(source, statManager, health);
-
-                    DoEffects(health.gameObject);
-
-                    pierced++;
-
-                    if (dmg.isCritical && pierced <= statManager.GetStat(Stat.critBounce))
-                    {
-                        return;
-                    }
-
-                    if (pierced > statManager.GetStat(Stat.pierceCount))
-                    {
-                        Destroy(gameObject);
-                    }
-                }
-            }
+            return;
         }
+
+        if (pierced > statManager.GetStat(Stat.pierceCount))
+        {
+            Destroy(gameObject);
+        }
+                
+        
+        
     }
 
 
-    public void AddEffect(GameObject effect)
+ 
+
+    IEnumerator CoolDown(GameObject hit)
     {
-        if(effect != null)
-        {
-            if (!effects.Contains(effect))
-            {
-                effects.Add(effect);
-            }
-        }
+        hitObjects.Add(hit);
+        yield return new WaitForSeconds(hurtSameEnemyCooldown);
+        hitObjects.Remove(hit);
     }
 
 
-    private void DoEffects(GameObject hit)
-    {
-        foreach(GameObject effect in effects)
-        {
-            ProjectileHitEffect hitEffect = effect.GetComponent<ProjectileHitEffect>();
-            if (hitEffect != null)
-            {
-                hitEffect.DoThing(this, hit);
-            }
-            
-        }
-    }
     public float GetStat(Stat stat)
     {
         return statManager.GetStat(stat);

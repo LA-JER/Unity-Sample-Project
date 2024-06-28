@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class CurrencyManager : MonoBehaviour
 {
-    public delegate void CurrencyChange(int newValue);
-    public static event CurrencyChange onCurrencyChange;
+    public delegate void CurrencyChange(int newTotal);
+    public static event CurrencyChange onTotalChange;
+    public static event CurrencyChange onRefund;
+    public static event CurrencyChange onPurchase;
 
     public static CurrencyManager instance;
 
-    [SerializeField] private int currencyAmount;
+    [SerializeField] private int totalMoney;
 
     private void Awake()
     {
@@ -30,15 +32,15 @@ public class CurrencyManager : MonoBehaviour
         if(roll <= GameManager.Instance.GetGoldChance())
         {
 
-            currencyAmount += value;
-            onCurrencyChange?.Invoke(currencyAmount);
+            totalMoney += value;
+            onTotalChange?.Invoke(totalMoney);
         }        
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        onCurrencyChange?.Invoke(currencyAmount);
+        onTotalChange?.Invoke(totalMoney);
     }
 
     // Update is called once per frame
@@ -49,22 +51,24 @@ public class CurrencyManager : MonoBehaviour
 
     public void Buy(int amount)
     {
-        if(currencyAmount >= amount)
+        if(totalMoney >= amount)
         {
-            currencyAmount -= amount;
-            onCurrencyChange?.Invoke(currencyAmount);
+            totalMoney -= amount;
+            onTotalChange?.Invoke(totalMoney);
+            onPurchase?.Invoke(amount);
         }
     }
 
     public void Refund(int amount)
     {
-        currencyAmount += amount;
-        onCurrencyChange?.Invoke(currencyAmount);
+        totalMoney += amount;
+        onTotalChange?.Invoke(totalMoney);
+        onRefund?.Invoke(amount);
     }
 
     public bool CanBuy(int amount)
     {
-        return currencyAmount >= amount;
+        return totalMoney >= amount;
     }
 
 

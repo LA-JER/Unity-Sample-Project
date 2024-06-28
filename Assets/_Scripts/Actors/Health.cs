@@ -19,7 +19,7 @@ public class Health : MonoBehaviour
 
     [SerializeField] private float maxHealth;
 
-    [SerializeField] private float currentHealth = 0;
+    [SerializeField] private float currentHealth;
 
     private void Start()
     {

@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4765806548081493258
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7671182014902445459, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8804397725588247281, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 2176653919483089162, guid: b754f6ca1ffd0194eb3a2bf0490c532a, type: 3}
+    - target: {fileID: 8804397725588247281, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: distanceMax
+      value: 3.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8804397725588247281, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: distanceMin
+      value: 2.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8804397725588247281, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: randomizedSpawn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8850601851477503543, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      propertyPath: m_Name
+      value: Ice Prefab Item Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2943387105105622735, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8850601851477503543, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4140034796243637917}
+  m_SourcePrefab: {fileID: 100100000, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+--- !u!1 &4102828411387112253 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8850601851477503543, guid: 43b15b2f5e820e3438cd1ebab20f8436, type: 3}
+  m_PrefabInstance: {fileID: 4765806548081493258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4140034796243637917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102828411387112253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 335cbbdfbd60a4e4997002d59696150d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isNegativeCondition: 0
+  cooldown: 15
+  repeats: 1

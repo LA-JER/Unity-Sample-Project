@@ -11,7 +11,8 @@ public class UpgradeNode : Upgrade
     public TurretSpriteGroup spriteGroup;
     public List<UpgradeNode> nextUpgrades = new List<UpgradeNode>();
     [Tooltip("Works with Projectile Movements (max 1) and Projectile Hit Effects (no max)")]
-    public List<GameObject> projectileModules = new List<GameObject>();
+    public List<GameObject> projectileModulesPrefabs = new List<GameObject>();
+    public List<GameObject> turretItemsPrefabs = new List<GameObject>();
 
     public override void ApplyUpgrade(GameObject owner)
     {
@@ -32,11 +33,11 @@ public class UpgradeNode : Upgrade
             }
 
             //adds new modules tothe projectile, such as movement type and hit effects
-            ProjectileManager projectileManager = owner.GetComponent<ProjectileManager>();
+            DamageElementManager projectileManager = owner.GetComponent<DamageElementManager>();
             if(projectileManager != null)
             {
                 
-                 projectileManager.AddNewModules(projectileModules);
+                 projectileManager.AddNewModules(projectileModulesPrefabs);
                 
             }
 
@@ -45,9 +46,20 @@ public class UpgradeNode : Upgrade
             {
                 spriteManager.ShowSprites(spriteGroup);
             }
+
+            ItemManager itemManager = owner.GetComponent<ItemManager>();
+            if(itemManager != null)
+            {
+                itemManager.AddItemsFromPrefabs(turretItemsPrefabs);
+            }
         } else
         {
             Debugger.Log(Debugger.AlertType.Warning, $"{name} tried to apply upgrade but the given actor was null!");
         }
+    }
+
+    public override void RemoveUpgrade(GameObject owner)
+    {
+        throw new NotImplementedException();
     }
 }

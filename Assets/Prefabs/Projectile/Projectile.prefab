@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 5938056596471694967}
   - component: {fileID: 7710234315687443550}
   - component: {fileID: 96289277377985454}
+  - component: {fileID: 2453038472977333890}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -133,10 +134,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   source: {fileID: 0}
+  targetsCapable:
+    _serializedList:
+    - Key: 0
+      Value: 1
+    - Key: 1
+      Value: 0
+    - Key: 2
+      Value: 0
   effects: []
   hurtBox: {fileID: 4674262087666136975}
   projectileMovement: {fileID: 0}
   rb: {fileID: 96289277377985454}
+  hurtSameEnemyCooldown: 0.35
 --- !u!114 &7710234315687443550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +210,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &2453038472977333890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4683666926794530534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4501a661639a0e4c9112e7f127ccce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffs:
+    _serializedList: []
+  buffTimeLeft:
+    _serializedList: []
+  baseStats:
+    _serializedList: []
 --- !u!1 &6127148800769111934
 GameObject:
   m_ObjectHideFlags: 0

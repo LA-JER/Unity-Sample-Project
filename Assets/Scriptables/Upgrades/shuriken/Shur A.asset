@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
+  m_Name: Shur A
+  m_EditorClassIdentifier: 
+  icon: {fileID: -1244850793, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
+  upgradeName: Spare Shurikens
+  upgradeDescription: Fires 2 additional shurikens
+  price: 25
+  statDictionary:
+    _serializedList:
+    - Key: 9
+      Value:
+        operation: 0
+        modifier: 2
+  spriteGroup:
+    turretSprites:
+      _serializedList:
+      - Key: 0
+        Value: {fileID: 21300000, guid: 955eeee5782ba394a84c909ec024a379, type: 3}
+  nextUpgrades:
+  - {fileID: 11400000, guid: d6c434cfa21b35449a3c2bf096b0f34e, type: 2}
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

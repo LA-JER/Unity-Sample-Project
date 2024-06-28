@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static StatManager;
-using static UnityEngine.EventSystems.EventTrigger;
 
-public class BuffHitEffect : ProjectileHitEffect
+public class BuffHitEffect : HitEffect
 {
     [Tooltip("A list of buffs to apply to the projectile")]
     [SerializeField] private List<Buff> ownerBuffs = new List<Buff>();
@@ -13,17 +12,17 @@ public class BuffHitEffect : ProjectileHitEffect
     [SerializeField] private List<Buff> hitBuffs = new List<Buff>();
 
 
-    public override void DoThing(Projectile projectile, GameObject hitObject)
+    public override void DoThing(DamageElement damageElement, GameObject hitObject)
     {
        // Debugger.Log(Debugger.AlertType.Info, $"Calling buff hit effect do thing!");
-        if (projectile != null)
+        if (damageElement != null)
         {
-            BuffManager buffManager = projectile.GetComponent<BuffManager>();
+            BuffManager buffManager = damageElement.GetComponent<BuffManager>();
             if(buffManager != null)
             {
                 foreach(Buff buff in ownerBuffs)
                 {
-                    Debugger.Log(Debugger.AlertType.Verbose, $"Applying {buff} to {projectile}");
+                    Debugger.Log(Debugger.AlertType.Verbose, $"Applying {buff} to {damageElement}");
                     buffManager.ApplyTimedBuff(buff);
                 }
             }

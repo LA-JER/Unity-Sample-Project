@@ -3,20 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Targeting;
 using static StatManager;
-using Unity.VisualScripting;
+using AYellowpaper.SerializedCollections;
+using static ITargetable;
 
 public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 {
     public delegate void TurretActivate();
     public event TurretActivate OnActivate;
+    public event TurretActivate OnDeactivate;
     public event TurretActivate OnTurretShoot;
+
+    public delegate void TurretReload(Vector2 position, float duration);
+    public static event TurretReload OnReload;
 
     [SerializeField] private Sprite Icon;
 
     [SerializeField] private string ActorName;
 
     [SerializeField] private string Description;
+    public bool ignoresReload = false;
     public TargetingStyle targetingStyle = TargetingStyle.closest;
+    public PlayArea playArea = PlayArea.Ground;
+    [SerializedDictionary("Enemy Type", "Can Target")]
+    public SerializedDictionary<PlayArea, bool> targetsCapable= new SerializedDictionary<PlayArea, bool>();
     [SerializeField] private int price = 3;
     [SerializeField] private string enemyTag = "Enemy"; // Tag of the target
     public Transform pivot; 
@@ -25,7 +34,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     [SerializeField] private CircleCollider2D rangeCollider;
 
     public StatManager statManager;
-    public ProjectileManager projectileManager;
+    public DamageElementManager projectileManager;
     private List<Transform> targetsInRange = new List<Transform>(); // keeps track of enemies in range of this turret
     private float fireCountdown = 0f; // Countdown timer for next shot
     public float timeBetweenConsecutiveShot = 0.1f;
@@ -33,7 +42,8 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     private float totalDamageDealt = 0;
     private int totalKills = 0;
     private int totalSpent = 0;
-    private bool isPaused = false;
+    private int shots;
+    private float reloadCountdown = 0f;
 
     private void Awake()
     {
@@ -44,10 +54,6 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         totalSpent += price;
     }
 
-    private void GameManager_OnPaused(bool isPaused)
-    {
-        this.isPaused = isPaused;
-    }
 
     private void UpgradeDisplay_OnBuyUpgrade(GameObject owner, UpgradeNode chosenUpgrade)
     {
@@ -76,7 +82,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         
     }
 
-    private void DamageDealer_OnDamageDealt(GameObject source, DamageElement.DamageInstance damage)
+    private void DamageDealer_OnDamageDealt(GameObject source, GameObject hit, DamageInstance damage)
     {
         if(source == null) return;
         if(source == gameObject)
@@ -94,7 +100,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     // Update is called once per frame
     void Update()
     {
-        if (isActivated && GameManager.Instance.GetIsGamePaused() == false)
+        if (isActivated && GameManager.Instance.IsGamePaused() == false)
         {
             AimAndFire();
         }
@@ -104,43 +110,53 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
 
      void AimAndFire()
     {
-        if(statManager != null)
+        if (statManager == null) return;
+        
+        if (rangeCollider != null)
         {
-            if (rangeCollider != null)
-            {
-                rangeCollider.radius = statManager.GetStat(Stat.range);
-            }
-
-            int targetCount = 1;
-            if (statManager.HasStat(Stat.targetMax))
-            {
-                 targetCount = (int)statManager.GetStat(Stat.targetMax);
-            }
-
-            List<Transform> targets = TargetingChip(targetsInRange, targetingStyle, targetCount, transform, rangeCollider.radius);
-            if (targets != null && targets.Count > 0)
-            {
-                RotateAim(targets[0]);
-
-                float fireRate = statManager.GetStat(Stat.fireRate);
-
-                //special case if fireRate was reduced to zero
-                if ( fireRate <= 0)
-                {
-                    return;
-                }
-
-                // Fire at the targetsInRange if countdown reaches zero
-                if (fireCountdown <= 0f)
-                {
-                    OnTurretShoot?.Invoke();
-                    StartCoroutine(Shoot(targets));
-                    fireCountdown = 1f / fireRate;
-                }
-
-                fireCountdown -= Time.deltaTime;
-            }
+            rangeCollider.radius = statManager.GetStat(Stat.range);
         }
+
+        int targetCount = 1;
+        if (statManager.HasStat(Stat.targetMax))
+        {
+            targetCount = (int)statManager.GetStat(Stat.targetMax); ;
+        }
+        
+        List<Transform> targets = TargetingChip(targetsInRange, targetingStyle, targetCount, transform, rangeCollider.radius);
+        if (targets != null && targets.Count > 0 && targets[0] != null)
+        {
+            RotateAim(targets[0]);
+
+            float fireRate = statManager.GetStat(Stat.fireRate);
+
+            //special case if fireRate was reduced to zero
+            if ( fireRate <= 0)
+            {
+                return;
+            }
+
+
+            if (ignoresReload == false && shots >= statManager.GetStat(Stat.magSize))
+            {
+                shots = 0;
+                reloadCountdown = statManager.GetStat(Stat.reloadTime);
+                OnReload?.Invoke(transform.position, reloadCountdown);
+            }
+
+            // Fire at the targetsInRange if countdown reaches zero
+            if (fireCountdown <= 0f && reloadCountdown <= 0f)
+            {
+                shots++;
+                OnTurretShoot?.Invoke();
+                StartCoroutine(Shoot(targets));
+                fireCountdown = 1f / fireRate;
+            }
+
+            fireCountdown -= Time.deltaTime;
+            reloadCountdown -= Time.deltaTime;
+        }
+        
     }
 
     //called in update
@@ -173,13 +189,14 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     // Handles enemy entering tower's range
     private void OnTriggerStay2D(Collider2D collision)
     {
+        EliminateNulls();
         if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
             ITargetable targetable = collision.GetComponent<ITargetable>();
             if(targetable != null)
             {
-                if (targetable.IsTargetable())
+                if ( targetable.IsTargetable() && CanTarget(targetable.GetPlayableArea()) )
                 {
                     if (targetsInRange.Contains(collision.transform) == false)
                     {
@@ -197,13 +214,14 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     // Handle enemy leaving tower's range
     private void OnTriggerExit2D(Collider2D collision)
     {
+        EliminateNulls();
         if (collision == null) return;
         if (collision.CompareTag(enemyTag))
         {
             ITargetable targetable = collision.GetComponent<ITargetable>();
             if (targetable != null)
             {
-                if (targetable.IsTargetable())
+                if (targetable.IsTargetable() && CanTarget(targetable.GetPlayableArea()) )
                 {
                     if (targetsInRange.Contains(collision.transform) )
                     {
@@ -215,6 +233,16 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         }
     }
 
+    bool CanTarget(PlayArea otherArea)
+    {
+        if(targetsCapable == null || !targetsCapable.ContainsKey(otherArea))
+        {
+            Debugger.Log(Debugger.AlertType.Error, $"Did not have {otherArea} in dictionary! Did you forget to add it to the turret?");
+            return false;
+        }
+
+        return targetsCapable[otherArea];
+    }
 
     private void Initialize()
     {
@@ -223,7 +251,7 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         {
             Debugger.Log(Debugger.AlertType.Warning, $"{name} coud not find its attached statManager! Did you forget to add the component?");
         }
-        projectileManager = GetComponent<ProjectileManager>();
+        projectileManager = GetComponent<DamageElementManager>();
         if(projectileManager == null)
         {
             Debugger.Log(Debugger.AlertType.Warning, $"{name} coud not find its attached projectileManager! Did you forget to add the component?");
@@ -239,6 +267,20 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
             rangeCollider.radius = range;
             
         }
+
+        
+        if (!statManager.HasStat(Stat.targetMax))
+        {
+            statManager.AddStatDefault(Stat.targetMax);
+        }
+        if (!statManager.HasStat(Stat.reloadTime))
+        {
+            statManager.AddStatDefault(Stat.reloadTime);
+        }
+        if (!statManager.HasStat(Stat.magSize))
+        {
+            statManager.AddStatDefault(Stat.magSize);
+        }
     }
 
     private void OnDestroy()
@@ -249,6 +291,21 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         //GameManager.OnPaused -= GameManager_OnPaused;
     }
 
+    public Dictionary<PlayArea, bool> GetCapabilities()
+    {
+        Dictionary<PlayArea, bool> dict = new Dictionary<PlayArea, bool>();
+        foreach(var cap in targetsCapable)
+        {
+            dict.Add(cap.Key, cap.Value);
+        }
+        return dict;
+    }
+
+    private void EliminateNulls()
+    {
+        targetsInRange.RemoveAll(item => item == null);
+    }
+    
     public int GetTotalSpent()
     {
         return totalSpent;
@@ -257,6 +314,11 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
     public float GetTotalDamage()
     {
         return totalDamageDealt;
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
 
     public int GetKills()
@@ -269,10 +331,16 @@ public abstract class Turret : MonoBehaviour, IHoverInfo, IPurchaseAble
         return price;
     }
 
-    public void Activate(GameObject o)
+    public void Activate(GameObject owner)
     {
         OnActivate?.Invoke();
         isActivated = true;
+    }
+
+    public void Deactivate(GameObject owner)
+    {
+        OnDeactivate?.Invoke();
+        isActivated = false;
     }
     public string GetName()
     {

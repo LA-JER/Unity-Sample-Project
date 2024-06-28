@@ -4,5 +4,13 @@ using UnityEngine;
 
 public interface ITargetable 
 {
+    public enum PlayArea
+    {
+        Ground,
+        Air,
+        Sea,
+    }
     bool IsTargetable();
+
+    PlayArea GetPlayableArea();
 }

@@ -11,17 +11,17 @@ public class WaveCounter : MonoBehaviour
 
     private void Awake()
     {
-        WaveManager.OnConfigStart += WaveManager_OnWaveStart;
+        WaveManager.OnWaveStart += WaveManager_OnWaveStart;
     }
 
-    private void WaveManager_OnWaveStart(WaveConfig config)
+    private void WaveManager_OnWaveStart(WaveGroup wave, bool h)
     {
-        text.text = pretext + config.waveNumber;
+        text.text = pretext + wave.waveNumber;
     }
 
 
     private void OnDestroy()
     {
-        WaveManager.OnConfigStart -= WaveManager_OnWaveStart;
+        WaveManager.OnWaveStart -= WaveManager_OnWaveStart;
     }
 }

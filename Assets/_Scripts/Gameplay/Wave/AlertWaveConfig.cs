@@ -7,4 +7,5 @@ public class AlertWaveConfig : WaveConfig
     public string title;
     public string description;
     public Sprite icon;
+    public Color backgroundColor;
 }

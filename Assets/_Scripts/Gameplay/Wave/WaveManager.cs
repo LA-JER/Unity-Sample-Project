@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
-    public delegate void WaveStart(WaveConfig config);
-    public static event WaveStart OnConfigStart;
-    public delegate void WaveChange();
-    public static event WaveChange OnWaveEnd;
+    public delegate void WaveChange(WaveGroup wave, bool isLast);
     public static event WaveChange OnWaveStart;
-    public delegate void RunEnd();
-    public static event RunEnd OnGameDone;
+    public static event WaveChange OnWaveEnd;
+
+    public delegate void WaveEvent();
+    public static event WaveEvent OnAllEnemiesKilled;
+    public static event WaveEvent OnWaveSkip;
 
     public static WaveManager Instance;
 
     [SerializeField] private Transform spawn;
-    [SerializeField] private WaveConfig[] waveConfigs;
+    [SerializeField] private WaveGroup[] waveGroups;
 
-    private GameManager gameManager;
-    private int waveNumber = 1;
-    private int configIndex = 0;
-    private Coroutine spawnCoroutine;
-    private float configElapsedTime = 0;
-    private bool spawnNextConfig = false;
-    private bool outOfWaves = false;
-    private bool isPaused = false;
+    public int waveIndex = 0;
+    public int configIndex = 0;
+    public float configElapsedTime = 0;
+    //private Coroutine waveRoutine = null;
+    //private Coroutine configRoutine = null;
+
+    public int waveStatus = 0; //0 = game not started yet or paused, 1 = spawning, 2 = stopped
+    private Dictionary<AlertWaveConfig, bool> alerted = new Dictionary<AlertWaveConfig, bool>();
 
     private void Awake()
     {
@@ -37,131 +37,109 @@ public class WaveManager : MonoBehaviour
             Destroy(this);
         }
         ContinueButton.OnContinue += ContinueButton_OnContinue;
-        //GameManager.OnPaused += GameManager_OnPaused;
+        GameManager.OnPaused += GameManager_OnPaused;
     }
 
     private void GameManager_OnPaused(bool isPaused)
     {
-        this.isPaused = isPaused;
-        
+        if(isPaused)
+        {
+            waveStatus = 0;
+            StopAllCoroutines();
+        } else
+        {
+            waveStatus = 1;
+            //waveRoutine = 
+            StartCoroutine(SpawnNextWave());
+        }
     }
 
     private void ContinueButton_OnContinue()
     {
-        Debugger.Log(Debugger.AlertType.Info, $" --- Wave {waveNumber} Begin! ---");
-        OnWaveStart?.Invoke();
-        spawnNextConfig = true;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        gameManager = GameManager.Instance;
-       
+        //waveRoutine =
+        StartCoroutine(SpawnNextWave());
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (GameManager.Instance.GetIsGamePaused() == false)
+        if(waveStatus == 1)
         {
-            SpawnWaves();
-            if (outOfWaves)
-            {
-                if (CheckIfNoEnemies())
-                {
-                    OnGameDone?.Invoke();
-                    gameObject.SetActive(false);
-                }
-            }
-        } else
-        {
-            if (spawnCoroutine != null)
-            {
+            configElapsedTime += Time.fixedDeltaTime;
+        } 
 
-                StopCoroutine(spawnCoroutine);
-                spawnCoroutine = null;
+        //if this is the last wave
+        //waves always increment after theyre dones
+         if(waveIndex == waveGroups.Length && waveStatus == 2)
+        {
+            if (IsWaveCompleted())
+            {
+                Debugger.Log(Debugger.AlertType.Info, "All enemies dead!");
+                OnAllEnemiesKilled?.Invoke();
+                this.enabled = false;
             }
         }
+      
     }
 
-    void SpawnWaves()
+
+    IEnumerator SpawnNextWave()
     {
-
-        if (configIndex < waveConfigs.Length)
+        if(waveGroups == null)
         {
-            
-            
-            
-            //Checks if this config still  belongs to the same wave number
-            if (waveConfigs[configIndex].waveNumber != waveNumber)
-            {
-                spawnNextConfig = false;
-                Debugger.Log(Debugger.AlertType.Info, $" --- Wave {waveNumber} Completed! ---");
-                if (spawnCoroutine != null)
-                {
-                    StopCoroutine(spawnCoroutine);
-                    spawnCoroutine = null;
-                }
-                OnWaveEnd?.Invoke();
-                waveNumber++;
-            }
-
-
-            if (spawnNextConfig)
-            {
-                configElapsedTime += Time.deltaTime;
-                //Coroutine configRoutine = null;
-                if (configElapsedTime <= waveConfigs[configIndex].duration)
-                {
-                    if (spawnCoroutine == null)
-                    {
-                        if(waveConfigs[configIndex] is AlertWaveConfig)
-                        {
-                            AlertWaveConfig config = (AlertWaveConfig)waveConfigs[configIndex];
-                            spawnCoroutine = StartCoroutine(SpawnCurrentConfig());
-                            configIndex++;
-                            AlertManager.instance.ShowAlert(config.title, config.description, config.icon);
-                            return;
-
-                        }
-
-                        OnConfigStart?.Invoke(waveConfigs[configIndex]);
-                        spawnCoroutine = StartCoroutine(SpawnCurrentConfig());
-                    }
-
-                    //yield return new WaitForSeconds(waveConfigs[configIndex].duration);
-                }
-                else
-                {
-                    if (spawnCoroutine != null)
-                    {
-                        StopCoroutine(spawnCoroutine);
-                        spawnCoroutine = null;
-                    }
-
-                    configIndex++;
-                    configElapsedTime = 0;
-
-
-                }
-            }
-
-
-            
-        } else
-        {
-            //OnGameDone?.Invoke();
-            outOfWaves = true;
+            Debugger.Log(Debugger.AlertType.Warning, "Wave Manager had no waves to spawn!");
+            yield break;
         }
 
+        waveStatus = 1;
         
+        WaveGroup currentWave = waveGroups[waveIndex];
+        if(currentWave == null)
+        {
+            Debugger.Log(Debugger.AlertType.Warning, $"Wave {waveIndex} was null!");
+            yield break;
+        }
+        Debugger.Log(Debugger.AlertType.Info, $" --- Wave {currentWave.waveNumber} Begin! ---");
+        bool isLast = waveIndex == waveGroups.Length - 1;
+            OnWaveStart?.Invoke(currentWave, isLast);
 
+        //handles spawning each config
+        for (int i = configIndex; i < currentWave.configs.Length; i++)
+        {
+            
+            WaveConfig config = currentWave.configs[i];
+            if (config == null) continue;
+
+            
+
+            //configRoutine =
+            StartCoroutine(SpawnConfig(config, config.duration - configElapsedTime ));
+            yield return new WaitForSeconds(config.duration);
+            configElapsedTime = 0;
+            configIndex++;
+        }
+
+         isLast = waveIndex == waveGroups.Length - 1;
+        OnWaveEnd?.Invoke(currentWave, isLast);
+        configIndex = 0;
+        waveIndex++;
+        waveStatus = 2;
+
+        if (currentWave.continues)
+        {
+            OnWaveSkip?.Invoke();
+            //waveRoutine =
+            StartCoroutine(SpawnNextWave());
+        }
+
+        yield break;
     }
 
-    private bool CheckIfNoEnemies()
+
+
+    private bool IsWaveCompleted()
     {
-        Transform enemyHolder = gameManager.GetEnemyHolder();
+        Transform enemyHolder = GameManager.Instance.GetEnemyHolder();
         if(enemyHolder != null)
         {
             int enemies = enemyHolder.transform.childCount;
@@ -174,27 +152,36 @@ public class WaveManager : MonoBehaviour
         return false;
     }
 
-    private IEnumerator SpawnCurrentConfig()
+    private IEnumerator SpawnConfig(WaveConfig config, float duration)
     {
-        if (configIndex < waveConfigs.Length)
+        if(config is AlertWaveConfig)
         {
-            while (true)
-            {
-                float wait = waveConfigs[configIndex].timeBetweenSpawns;
+            HandleAlert(config as  AlertWaveConfig);
+        }
 
-                GameObject randomEnemyPrefab = RollEnemyType(waveConfigs[configIndex]);
-                if (randomEnemyPrefab != null)
-                {
-                    SpawnPrefab(randomEnemyPrefab);
-                }
-                else
-                {
-                    Debugger.Log( Debugger.AlertType.Warning , $"{name} tried to spawn an enemy prefab but recieved a null object");
-                }
-                yield return new WaitForSeconds(wait);
+        float pause = config.timeBetweenSpawns;
+        int spawnCount = Mathf.CeilToInt(duration / pause);
+
+        for(int i = 0; i < spawnCount; i++)
+        {
+            GameObject randomEnemyPrefab = RollEnemyFromConfig(config);
+            if (randomEnemyPrefab == null)
+            {
+                Debugger.Log(Debugger.AlertType.Warning, $"{name} tried to spawn an enemy prefab but recieved a null object");
+                continue;
             }
 
+            SpawnPrefab(randomEnemyPrefab);
+            yield return new WaitForSeconds(pause);
         }
+        yield break;
+    }
+
+    private void HandleAlert(AlertWaveConfig config)
+    {
+        if (alerted.ContainsKey(config)) return;
+        alerted.Add(config, true );
+        AlertManager.instance.ShowAlert(config.title, config.description, config.icon, config.backgroundColor);
     }
 
     private void SpawnPrefab(GameObject prefab)
@@ -203,13 +190,15 @@ public class WaveManager : MonoBehaviour
         {
 
             // Spawn the enemy prefab 
-            GameObject go = Instantiate(prefab, gameManager.GetEnemyHolder());
+            GameObject go = Instantiate(prefab, GameManager.Instance.GetEnemyHolder());
+            //Transform randomStart = EnemyPathManager.Instance.GetRandomSpawn();
+            //go.transform.position = randomStart.position;
             go.transform.position = spawn.position;
         }
     }
 
     //Returns a random Enemy Prefab based on the rarity assigned to it in given wave config 
-    private GameObject RollEnemyType(WaveConfig config)
+    private GameObject RollEnemyFromConfig(WaveConfig config)
     {
         List<GameObject> randomPrefab = RandomSelect<GameObject>.ChooseRandomObjects(config.weightTable, 1);
         if(randomPrefab == null || randomPrefab.Count ==0)
@@ -223,6 +212,6 @@ public class WaveManager : MonoBehaviour
     private void OnDestroy()
     {
         ContinueButton.OnContinue -= ContinueButton_OnContinue;
-       // GameManager.OnPaused -= GameManager_OnPaused;
+        GameManager.OnPaused -= GameManager_OnPaused;
     }
 }

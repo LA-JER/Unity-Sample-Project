@@ -9,25 +9,24 @@ using AYellowpaper.SerializedCollections;
 public class BuffManager : MonoBehaviour
 {
     public delegate void BuffApply(int buffID, bool isActive);
-    public event BuffApply OnBuffApply;
+    public event BuffApply OnBuffChange;
 
     //private Dictionary<int, Buff> buffs = new Dictionary<int, Buff>();
     [SerializedDictionary("ID", "Buff")]
     public SerializedDictionary<int, Buff> buffs = new SerializedDictionary<int, Buff>();
+    [SerializedDictionary("ID", "Time Left")]
+    public SerializedDictionary<int, float> buffTimeLeft = new SerializedDictionary<int, float>();
     [SerializedDictionary("Stat", "Base Value")]
     public SerializedDictionary<Stat, float> baseStats = new SerializedDictionary<Stat, float>();
 
     private StatManager statManager;
+    private Dictionary<int, Coroutine> buffTimers = new Dictionary<int, Coroutine>();   
 
     // Start is called before the first frame update
     void Awake()
     {
-    }
-
-    private void Start()
-    {
         statManager = GetComponent<StatManager>();
-        
+
         InitializeBaseStats();
     }
 
@@ -41,23 +40,19 @@ public class BuffManager : MonoBehaviour
         } 
         float oldVal = statManager.GetStat(targetStat);
 
-        if (operation == Item.Operation.Multiplicative)
-        {
-            statManager.UpdateStat(targetStat, oldVal * value);
-
-            UpdateBaseStats(targetStat);
-
-        }
-        else if (operation == Item.Operation.Additive)
-        {
-            statManager.UpdateStat(targetStat, oldVal + value);
-            UpdateBaseStats(targetStat);
-        }
-        else if (operation == Item.Operation.Set)
-        {
-            statManager.UpdateStat(targetStat, value);
-            UpdateBaseStats(targetStat);
-        }
+        switch (operation)
+            {
+                case Item.Operation.Multiplicative:
+                    statManager.UpdateStat(targetStat, oldVal * value);
+                    break;
+                case Item.Operation.Additive:
+                    statManager.UpdateStat(targetStat, oldVal + value);
+                    break;
+                case Item.Operation.Set:
+                    statManager.UpdateStat(targetStat, value);
+                    break;
+            }
+        UpdateBaseStats(targetStat);
 
         //special case to for health
         if (targetStat == Stat.maxHealth)
@@ -74,14 +69,6 @@ public class BuffManager : MonoBehaviour
         }
 
     }
-
-
-    public void ApplyTimedBuff(Buff buff)
-    {
-        StartCoroutine(BuffTimer(buff));
-    }
-
-
 
     void RemoveBuff(int ID, Stat targetStat)
     {
@@ -117,63 +104,130 @@ public class BuffManager : MonoBehaviour
         }
     }
 
-    //A timer which modifies stats when the buff is first applied and also when removed
+    public void ApplyTimedBuff(Buff buff)
+    {
+        if (buff.duration <= 0 || buff.ID == 0)
+        {
+            return;
+        }
+
+        
+        if (buffs.ContainsKey(buff.ID))
+        {
+            
+
+            //re apply buff
+            if (buffs[buff.ID].currentStacks + 1 <= buff.maxStacks)
+            {
+                buffs[buff.ID].currentStacks++;
+                //stop old timer
+                Coroutine oldTimer = buffTimers[buff.ID];
+                if (oldTimer != null)
+                {
+                    StopCoroutine(oldTimer);
+                }
+                buffTimers.Remove(buff.ID);
+
+                //start new timer
+                Buff internalBuff = buffs[buff.ID];
+                Coroutine timer = StartCoroutine(BuffTimer(internalBuff));
+                buffTimers.Add(buff.ID, timer);
+            }
+
+            else if (buffs[buff.ID].currentStacks == buff.maxStacks && buff.isRefreshable)
+            {
+                //stop old timer
+                Coroutine oldTimer = buffTimers[buff.ID];
+                if (oldTimer != null)
+                {
+                    StopCoroutine(oldTimer);
+                }
+                buffTimers.Remove(buff.ID);
+
+                //start new timer
+                Buff internalBuff = buffs[buff.ID];
+                Coroutine timer = StartCoroutine(BuffTimer(internalBuff));
+                buffTimers.Add(buff.ID, timer);
+            }
+
+        }
+        //add the buff for the first time
+        else
+        {
+            
+            Buff buffInstance = new Buff(buff);
+            buffs.Add(buff.ID, buffInstance);
+            buffs[buff.ID].currentStacks++;
+            buffTimeLeft.Add(buff.ID, buff.duration);
+            OnBuffChange?.Invoke(buff.ID, true);
+
+            Coroutine timer = StartCoroutine(BuffTimer(buff));
+            buffTimers.Add(buff.ID, timer);
+        }
+
+        
+    }
+
+    //A timer which updates stats when the buff is first applied and also when removed
     private IEnumerator BuffTimer(Buff newBuff)
     {
-        if (newBuff.duration > 0 && newBuff.ID != 0)
+        
+
+        //since buffs can modify multiple stats, ensure we recalculate each stat
+        foreach (Stat targetStat in newBuff.affectedStats.Keys)
         {
-
-            //increment the buff stack amounts
-            if (!buffs.ContainsKey(newBuff.ID))
-            {
-                buffs.Add(newBuff.ID, newBuff);
-                OnBuffApply?.Invoke(newBuff.ID, true);
-            }
-            if (buffs[newBuff.ID].currentStacks < newBuff.maxStacks)
-            {
-                buffs[newBuff.ID].currentStacks++;
-                //OnBuffApply?.Invoke(newBuff.ID, true);
-            } else
-            {
-                yield return null;
-            }
-
-            //since buffs can modify multiple stats, ensure we recalculate each stat
-            foreach (Stat targetStat in newBuff.affectedStats.Keys)
-            {
-                //Debug.Log($"buffing {targetStat}. Was {statManager.GetStat(targetStat)}");
-                ReCalculateStat(targetStat);
-                //Debug.Log($"Now, {statManager.GetStat(targetStat)}");
-            }
             
-            //wait the buff duration
-            yield return new WaitForSeconds(newBuff.duration);
+            ReCalculateStat(targetStat);
+        }
+            
+        //wait the buff duration
 
-            //decrement the buff stacks. If it reaches 0, remove buff entirely
-            if (buffs.ContainsKey(newBuff.ID))
+        for(int i = (int)newBuff.duration; i > 0; i--)
+        {
+            buffTimeLeft[newBuff.ID] = i;
+            yield return new WaitForSeconds(1);
+            
+        }
+            
+      
+
+
+        //decrement the buff stacks. If it reaches 0, remove buff entirely
+        if (buffs.ContainsKey(newBuff.ID))
+        {
+            
+                buffs[newBuff.ID].currentStacks--;
+            
+            if(buffs[newBuff.ID].currentStacks >0 || !newBuff.decays)
             {
-                if (buffs[newBuff.ID].currentStacks > 1)
-                {
-                    buffs[newBuff.ID].currentStacks--;
-                }
-                else
-                {
-                    buffs.Remove(newBuff.ID);
-                    OnBuffApply?.Invoke(newBuff.ID, false);
-                }
-
-
-            }
-
-            //recalculate stats on buff exit as well
-            foreach (Stat targetStat in newBuff.affectedStats.Keys)
-            {
-                ReCalculateStat(targetStat);
+               
+                buffTimers.Remove(newBuff.ID);
+                buffTimeLeft.Remove(newBuff.ID);
+                buffs.Remove(newBuff.ID);
+                OnBuffChange?.Invoke(newBuff.ID, false);
             }
 
 
         }
-        yield return null;
+
+        //recalculate stats on buff exit as well
+        foreach (Stat targetStat in newBuff.affectedStats.Keys)
+        {
+            ReCalculateStat(targetStat);
+        }
+
+
+        //starts a new timer for the buff with 1 fewer stack
+        if(newBuff.decays &&  newBuff.currentStacks > 1)
+        {
+            Coroutine decay = StartCoroutine(BuffTimer(newBuff));
+            buffTimers[newBuff.ID] = decay;
+        }
+
+        
+
+        yield break;
+
     }
 
     //Applies additive buffs before multiplicative buffs for a specific stat
@@ -237,6 +291,11 @@ public class BuffManager : MonoBehaviour
         //apply multiplicative buffs
         foreach (Buff buff in mulitplyBuffs)
         {
+            if (buff.affectedStats[stat].modifier == 0)
+            {
+                newVal = 0;
+                break;
+            }
             baseVal *= buff.affectedStats[stat].modifier;
             newVal = baseVal;
         }
@@ -247,10 +306,7 @@ public class BuffManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        //Equipment.OnEquipmentReady -= Equipment_OnEquipmentReady;
-        //XPManager.onLevelUp -= XPManager_onLevelUp;
-       // Upgrade.OnUpgradeReady -= Upgrade_OnUpgradeReady;
-        //OnEquipmentRevoke -= BuffManager_OnEquipmentRevoke;
+        OnBuffChange = null;
     }
 
   

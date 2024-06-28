@@ -1,20 +1,25 @@
-using System.Collections;
+using AYellowpaper.SerializedCollections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class EnemyPathManager : MonoBehaviour
 {
     public static EnemyPathManager Instance;
 
     [SerializeField] Transform map;
+    [SerializeField] private GameObject circlePrefab;
     [SerializeField] private Material lineMaterial;
     [SerializeField] private Color lineColor;
     [SerializeField] private float lineWidth = 0.1f;
-    [SerializeField] private List<Transform> waypoints = new List<Transform>();
+    [SerializeField] private Vector2 randomPathOffset = new Vector2(.25f, .25f);
+    [SerializedDictionary("Start Node", "Spawn Weight")]
+    [SerializeField] public SerializedDictionary<PathNode, int> startNodes = new SerializedDictionary<PathNode, int>();
     [SerializeField] private string colliderTag = "Path";
     [SerializeField] private float colliderWidth = 10;
 
+
+    private List<Line> lines = new List<Line>();
+    private List<Transform> waypoints = new List<Transform>();
     private void Awake()
     {
         if(Instance == null)
@@ -29,87 +34,137 @@ public class EnemyPathManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        DrawLines();
-        AddColliders();
+        Initialize();
+       // DrawLines();
+        //AddColliders();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    void Initialize()
     {
+        if(startNodes == null || startNodes.Count == 0) 
+        {
+            Debugger.Log(Debugger.AlertType.Error, "Waypoint Manager did not have start nodes!");
+            return;
+        }
+
+        foreach(var node in startNodes)
+        {
+            TraverseTree(node.Key, null);
+        }
+    }
+
+    //Initializes all things that must be done through traversing the tree
+    void TraverseTree(PathNode node, Transform lastNodeTransform)
+    {
+        if (node == null || node.childNodes == null) return;
+
+        //get a single reference to each node's transform
+        if (!waypoints.Contains(node.location))
+        {
+            waypoints.Add(node.location);
+        }
+
+        //Draw the lines and adds the colliders to designate what is the enemy path
+        if(lastNodeTransform != null)
+        {
+            DrawLine(lastNodeTransform.position, node.location.position);
+            AddCollider(lastNodeTransform.position, node.location.position);
+        }
+
+        DrawCircle(node.location.position);
+
+
+        //get a list of the children 
+        List<PathNode> children = new List<PathNode>();
+        foreach(var child in node.childNodes)
+        {
+            children.Add(child.Key);
+        }
+
+        foreach(var child in children)
+        {
+            TraverseTree(child, node.location);
+        }
+
+    }
+
+    private void DrawLine(Vector2 pointA, Vector2 pointB)
+    {
+        if (lineMaterial == null)
+        {
+            Debugger.Log(Debugger.AlertType.Warning, $"{name} did not have a line meterial!");
+            return;
+        }
+
+        if (pointA == null || pointB == null) return;
+
+        
+        GameObject lineObject = new GameObject("Line_" + pointA + "_" + pointB);
+        LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
+        if (lineRenderer != null)
+        {
+            // Configure the line renderer
+            lineRenderer.material = lineMaterial;
+            lineRenderer.startColor = lineColor;
+            lineRenderer.endColor = lineColor;
+            lineRenderer.widthMultiplier = lineWidth;
+            lineRenderer.positionCount = 2;
+            lineRenderer.sortingOrder = -2;
+            lineRenderer.SetPosition(0, pointA);
+            lineRenderer.SetPosition(1, pointB);
+        }
+
+        if (map != null)
+        {
+            lineObject.transform.SetParent(map, true);
+        }
         
     }
 
-    void DrawLines()
+    private void DrawCircle(Vector2 center)
     {
-        if (waypoints.Count < 2)
-        {
-            Debugger.Log(Debugger.AlertType.Warning ,$"{name} needs at least two waypoints to create a line.");
-            return;
-        }
-        if(lineMaterial != null)
-        {
-            // Iterate through the points list and create line renderers
-            for (int i = 0; i < waypoints.Count - 1; i++)
-            {
-                GameObject lineObject = new GameObject("Line_" + waypoints[i].name + "_" + waypoints[i+1].name);
-                LineRenderer lineRenderer = lineObject.AddComponent<LineRenderer>();
-                if (lineRenderer != null)
-                {
-                    // Configure the line renderer
-                    lineRenderer.material = lineMaterial;
-                    lineRenderer.startColor = lineColor; 
-                    lineRenderer.endColor = lineColor;
-                    lineRenderer.widthMultiplier = lineWidth;
-                    lineRenderer.positionCount = 2;
-                    lineRenderer.SetPosition(0, waypoints[i].position);
-                    lineRenderer.SetPosition(1, waypoints[i + 1].position);
-                }
+        if (center == null) return;
+        GameObject circleOBJ = Instantiate(circlePrefab, map);
+        circleOBJ.transform.position = center;
 
-                if(map != null)
-                {
-                    lineObject.transform.SetParent(map, true);
-                }
-            }
-        } else
+        circleOBJ.transform.localScale = new Vector2(lineWidth, lineWidth);
+        SpriteRenderer spriteRenderer = circleOBJ.GetComponent<SpriteRenderer>();
+        if(spriteRenderer != null)
         {
-            Debugger.Log(Debugger.AlertType.Warning, $"{name} did not have a line meterial!");
+            spriteRenderer.color = lineColor;
         }
+
     }
 
-    void AddColliders()
-    {
-        if (waypoints.Count < 2)
-        {
-            Debugger.Log(Debugger.AlertType.Warning, $"{name} needs at least two waypoints to create colliders.");
-            return;
-        }
 
-        // Iterate through the points list and create box colliders
-        for (int i = 0; i < waypoints.Count - 1; i++)
-        {
-            CreateBoxColliderBetween(waypoints[i], waypoints[i + 1]);
-            if(i >0 &&  i < waypoints.Count - 1)
-            {
-                CreateCirlceColliderAt(waypoints[i]);
-            }
-        }
+    void AddCollider(Vector2 positionA, Vector2 positionB)
+    {
+        if (positionA == null || positionB == null) return;
+
+        
+        CreateBoxColliderBetween(positionA, positionB);
+       
+            CreateCirlceColliderAt(positionB);
+        
+        
     }
 
-    void CreateBoxColliderBetween(Transform pointA, Transform pointB)
+    void CreateBoxColliderBetween(Vector2 pointA, Vector2 pointB)
     {
         // Create a new GameObject for the collider
-        GameObject colliderObject = new GameObject("BoxCollider2D_" + pointA.name + "_" + pointB.name);
+        GameObject colliderObject = new GameObject("BoxCollider2D_" + pointA + "_" + pointB);
         BoxCollider2D boxCollider = colliderObject.AddComponent<BoxCollider2D>();
 
         // Calculate the position and size of the collider
-        Vector3 midPoint = (pointA.position + pointB.position) / 2;
-        float distance = Vector3.Distance(pointA.position, pointB.position);
+        Vector3 midPoint = (pointA + pointB) / 2;
+        float distance = Vector3.Distance(pointA, pointB);
 
         // Set the collider's position
         colliderObject.transform.position = midPoint;
 
         // Calculate the angle between the points and set the rotation
-        Vector3 direction = pointB.position - pointA.position;
+        Vector3 direction = pointB - pointA;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         colliderObject.transform.rotation = Quaternion.Euler(0, 0, angle);
 
@@ -124,12 +179,12 @@ public class EnemyPathManager : MonoBehaviour
         }
     }
 
-    void CreateCirlceColliderAt(Transform point)
+    void CreateCirlceColliderAt(Vector2 point)
     {
-        GameObject colliderObject = new GameObject("CircleCollider2D_" + point.name);
+        GameObject colliderObject = new GameObject("CircleCollider2D_" + point);
         CircleCollider2D circleCollider2D = colliderObject.AddComponent<CircleCollider2D>();
 
-        colliderObject.transform.position = point.position;
+        colliderObject.transform.position = point;
 
         float radius = colliderWidth / 2f;
 
@@ -143,15 +198,48 @@ public class EnemyPathManager : MonoBehaviour
         }
     }
 
-    public List<Transform> GetWayPoints()
+    public List<Vector3> Getpath(bool randomOffset = true)
     {
-        List<Transform> list = new List<Transform>();
-        foreach(Transform t in waypoints)
-        {
-            list.Add(t);
+        float xOffset = Random.Range(-randomPathOffset.x, randomPathOffset.x);
+        float yOffset = Random.Range(-randomPathOffset.y, randomPathOffset.y);
+        Vector3 offset = new Vector3(xOffset, yOffset);
+
+        //get random starting node based on weights
+        PathNode nextNode = GetRandomSpawnNode();
+
+        List < Vector3 > list = new List<Vector3>();
+        while (nextNode != null){
+            list.Add(nextNode.location.position + offset);
+            nextNode = ChooseWeightedNode(nextNode);
         }
 
+
         return list;
+    }
+
+    PathNode ChooseWeightedNode(PathNode node)
+    {
+        if (node == null || node.childNodes == null ) return null;
+
+        List<PathNode> random = RandomSelect<PathNode>.ChooseRandomObjects(node.childNodes, 1);
+        if(random == null) return null;
+        return random[0];
+    }
+
+    private PathNode GetRandomSpawnNode()
+    {
+        List<PathNode> randomStart = RandomSelect<PathNode>.ChooseRandomObjects(startNodes, 1);
+        if (randomStart == null || randomStart.Count == 0)
+        {
+            Debugger.Log(Debugger.AlertType.Warning, "Could not choose random starting node for enemy paths!");
+            return null;
+        }
+        return randomStart[0];
+    }
+
+    public Transform GetRandomSpawn()
+    {
+        return GetRandomSpawnNode().location;
     }
 
     public List<Transform> GetClosestWayPoints(Vector2 position)
@@ -196,4 +284,10 @@ public class EnemyPathManager : MonoBehaviour
 
         return list;
     }
+}
+
+public class Line
+{
+    Vector2 positionA;
+    Vector2 positionB;
 }

@@ -1,3 +1,4 @@
+using AYellowpaper.SerializedCollections;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +8,15 @@ public class AudioPlayer : MonoBehaviour
 {
     [SerializeField] private AudioSource SFXSource;
     [SerializeField] SoundEfect shootSFX;
+    [SerializeField] SoundEfect criticalHurt;
     [SerializeField] SoundEfect hurtSFX;
     [SerializeField] SoundEfect dieSFX;
+    [SerializedDictionary("Buff ID", "SFX")]
+    [SerializeField] SerializedDictionary<int, SoundEfect> buffSFX = new SerializedDictionary<int, SoundEfect>();   
 
     private Turret turret;
     private Health health;
+    private BuffManager buffManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +31,23 @@ public class AudioPlayer : MonoBehaviour
             health.onHealthDamage += Health_onHealthDamage;
             health.onHealthZero += Health_onHealthZero;
         }
+        buffManager = GetComponent<BuffManager>();
+        if(buffManager != null )
+        {
+            buffManager.OnBuffChange += BuffManager_OnBuffApply;
+        }
+    }
+
+    private void BuffManager_OnBuffApply(int buffID, bool isActive)
+    {
+        if(isActive)
+        {
+            if (buffSFX.ContainsKey(buffID))
+            {
+                PlaySound(buffSFX[buffID]);
+            }
+            
+        }
     }
 
     private void Health_onHealthZero(GameObject killer)
@@ -35,7 +57,14 @@ public class AudioPlayer : MonoBehaviour
 
     private void Health_onHealthDamage(float amount, bool isCritical)
     {
-        PlaySound(hurtSFX);
+        if (isCritical)
+        {
+            PlaySound(criticalHurt);
+        } else
+        {
+            PlaySound(hurtSFX);
+        }
+        
     }
 
     private void Turret_OnTurretShoot()
@@ -51,8 +80,7 @@ public class AudioPlayer : MonoBehaviour
             pitch = Random.Range(sfx.minPitch, sfx.maxPitch);
         }
         SFXSource.pitch = pitch;
-        SFXSource.clip = sfx.audioClip;
-        SFXSource.Play();
+        SFXSource.PlayOneShot(sfx.audioClip);
     }
 
     private void OnDestroy()
@@ -65,6 +93,10 @@ public class AudioPlayer : MonoBehaviour
         {
             health.onHealthDamage -= Health_onHealthDamage;
             health.onHealthZero -= Health_onHealthZero;
+        }
+        if (buffManager != null)
+        {
+            buffManager.OnBuffChange -= BuffManager_OnBuffApply;
         }
     }
 }

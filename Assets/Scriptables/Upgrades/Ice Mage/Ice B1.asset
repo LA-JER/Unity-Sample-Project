@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Ice B1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -390260477, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Ice Splinters
   upgradeDescription: PIERCE +1, slightly lowered DMG
   price: 36
@@ -33,4 +33,5 @@ MonoBehaviour:
         Value: {fileID: 21300000, guid: 3948be32b1e5be54bb9a8923daa68ee2, type: 3}
   nextUpgrades:
   - {fileID: 11400000, guid: ec75e8db55a6893429a4b7db0897fb1b, type: 2}
-  hitEffects: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

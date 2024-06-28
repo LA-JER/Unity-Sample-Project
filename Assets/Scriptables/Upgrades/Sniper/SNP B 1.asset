@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: SNP B 1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -390260477, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Faster Arms
-  upgradeDescription: Shoots 15% faster
-  price: 17
+  upgradeDescription: Shoots 33% faster
+  price: 28
   statDictionary:
     _serializedList:
     - Key: 5
       Value:
         operation: 1
-        modifier: 1.15
+        modifier: 1.33
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -33,4 +33,5 @@ MonoBehaviour:
         Value: {fileID: 0}
   nextUpgrades:
   - {fileID: 11400000, guid: 3f0a79c6d2a19b84198cb0ee91fb00da, type: 2}
-  hitEffects: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

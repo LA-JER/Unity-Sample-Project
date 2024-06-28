@@ -27,6 +27,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private SoundEfect enemyDeath;
     [SerializeField] private SoundEfect gameOverSFX;
     [SerializeField] private SoundEfect gameWinSFX;
+    [SerializeField] private SoundEfect fastForwardSFX;
 
 
     private void Awake()
@@ -47,6 +48,18 @@ public class AudioManager : MonoBehaviour
         PauseMenu.onPauseToggle += PauseMenu_onPauseToggle;
         //Enemy.OnEnemyDeath += Enemy_OnEnemyDeath;
         GameManager.OnGameEnd += Base_OnBaseDie;
+        FastForwardButton.OnFastForward += FastForwardButton_OnFastForward;
+        FastForwardButton.OnNormal += FastForwardButton_OnNormal;
+    }
+
+    private void FastForwardButton_OnNormal()
+    {
+        StopSound(fastForwardSFX);
+    }
+
+    private void FastForwardButton_OnFastForward()
+    {
+        PlaySound(fastForwardSFX, true);
     }
 
     private void Base_OnBaseDie(bool win)
@@ -62,10 +75,6 @@ public class AudioManager : MonoBehaviour
         
     }
 
-    private void Enemy_OnEnemyDeath(GameObject souce, Enemy.EnemyRank rank, int value)
-    {
-        PlaySound(enemyDeath);
-    }
 
     private void PauseMenu_onPauseToggle(bool isPaused)
     {
@@ -89,7 +98,7 @@ public class AudioManager : MonoBehaviour
     {
         PlaySound(BGM);
     }
-    private void WaveManager_OnWaveStart()
+    private void WaveManager_OnWaveStart(WaveGroup wave, bool h)
     {
         PlaySound(waveStart);
     }
@@ -130,7 +139,7 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    void PlaySound(SoundEfect soundEfect)
+    void PlaySound(SoundEfect soundEfect, bool loops = false)
     {
         float pitch = 1;
         if (soundEfect.randomPitch)
@@ -138,22 +147,52 @@ public class AudioManager : MonoBehaviour
             pitch = UnityEngine.Random.Range(soundEfect.minPitch, soundEfect.maxPitch);
         }
 
+        AudioSource audioSource = null;
         switch (soundEfect.soundType)
         {
             case SoundType.GamePlay:
-                gameSFXSource.pitch = pitch;
-                gameSFXSource.clip = soundEfect.audioClip;
-                gameSFXSource.Play();
+                audioSource = gameSFXSource;
                 break;
             case SoundType.UI:
-                uiSFXSource.pitch = pitch; 
-                uiSFXSource.clip = soundEfect.audioClip; 
-                uiSFXSource.Play(); 
+                audioSource = uiSFXSource;
                 break;
             case SoundType.Music:
-                musicSource.pitch = pitch;
-                musicSource.clip = soundEfect.audioClip;
-                musicSource.Play();
+                audioSource = musicSource;
+                break;
+            default: break;
+        }
+
+        if (audioSource == null) return;
+        audioSource.pitch = pitch;
+        audioSource.loop = loops;
+        if (loops)
+        {
+            audioSource.clip = soundEfect.audioClip;
+            audioSource.Play();
+        } else
+        {
+            //Debug.Log("test");
+            audioSource.PlayOneShot(soundEfect.audioClip);
+        }
+
+    }
+
+    void StopSound(SoundEfect soundEfect)
+    {
+        
+        switch (soundEfect.soundType)
+        {
+            case SoundType.GamePlay:
+                gameSFXSource.Stop();
+                gameSFXSource.loop = false;
+                break;
+            case SoundType.UI:
+                uiSFXSource.Stop();
+                uiSFXSource.loop = false;
+                break;
+            case SoundType.Music:
+                musicSource.Stop();
+                musicSource.loop = false;
                 break;
             default: break;
         }
@@ -171,6 +210,8 @@ public class AudioManager : MonoBehaviour
         PauseMenu.onPauseToggle -= PauseMenu_onPauseToggle;
         //Enemy.OnEnemyDeath -= Enemy_OnEnemyDeath;
         GameManager.OnGameEnd -= Base_OnBaseDie;
+        FastForwardButton.OnFastForward -= FastForwardButton_OnFastForward;
+        FastForwardButton.OnNormal -= FastForwardButton_OnNormal;
     }
 
     [Serializable]

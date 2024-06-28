@@ -54,17 +54,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d2862c27666c804bbe177b1ab35d334, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 0}
+  Icon: {fileID: 21300000, guid: ea59067143a8bc14cbb016546d02d334, type: 3}
   ActorName: UFO
   Description: A Regular UFO
   rank: 0
+  playArea: 0
   value: 2
   waypoints: []
   rb: {fileID: 0}
   statManager: {fileID: 0}
   deathLingerDuration: 0.25
   distanceThreshold: 0.05
-  setsTargetsItself: 1
 --- !u!114 &7094740808394130960
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffs:
     _serializedList: []
+  buffTimeLeft:
+    _serializedList: []
   baseStats:
     _serializedList: []
 --- !u!114 &4267386750213956346
@@ -196,6 +198,12 @@ MonoBehaviour:
     randomPitch: 0
     minPitch: 0.95
     maxPitch: 1.07
+  criticalHurt:
+    soundType: 0
+    audioClip: {fileID: 8300000, guid: 0c8a763d8fe5eea449cc13e86e28209e, type: 3}
+    randomPitch: 1
+    minPitch: 0.95
+    maxPitch: 1.07
   hurtSFX:
     soundType: 0
     audioClip: {fileID: 8300000, guid: 1d5e10de36f94cd4e91c8c1163e76330, type: 3}
@@ -208,6 +216,8 @@ MonoBehaviour:
     randomPitch: 1
     minPitch: 0.95
     maxPitch: 1.07
+  buffSFX:
+    _serializedList: []
 --- !u!114 &1008466734510862572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,6 +234,8 @@ MonoBehaviour:
   buffVFX:
     _serializedList:
     - Key: 10
+      Value: {fileID: 21300000, guid: 7d93d2c0e9302e44b8cca1de84be127e, type: 3}
+    - Key: 20
       Value: {fileID: 21300000, guid: 7d93d2c0e9302e44b8cca1de84be127e, type: 3}
 --- !u!1 &4912223933685925148
 GameObject:

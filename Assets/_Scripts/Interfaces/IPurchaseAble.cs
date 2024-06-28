@@ -5,6 +5,11 @@ using UnityEngine;
 public interface IPurchaseAble 
 {
     int GetPrice();
+    int GetTotalSpent();
 
     void Activate(GameObject owner = null);
+
+    void Deactivate(GameObject owner = null);
+
+    void Destroy();
 }

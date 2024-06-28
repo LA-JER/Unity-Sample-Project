@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Turret B1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  upgradeName: Glasses
-  upgradeDescription: +4 Range
+  icon: {fileID: -390260477, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
+  upgradeName: Copy Cat
+  upgradeDescription: Fires one more projectile
   price: 17
   statDictionary:
     _serializedList:
-    - Key: 12
+    - Key: 9
       Value:
         operation: 0
-        modifier: 4
+        modifier: 1
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -33,4 +33,5 @@ MonoBehaviour:
         Value: {fileID: 0}
   nextUpgrades:
   - {fileID: 11400000, guid: 85bf67165c060f74fb57848e09fb814b, type: 2}
-  hitEffects: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

@@ -31,7 +31,10 @@ public class StatManager : MonoBehaviour
         NONE,
         firePoints,
         trackingStrength,
-        trackingSize,
+        projectileTargetRadius,
+        magSize,
+        reloadTime,
+        luck
 
     }
 
@@ -49,7 +52,7 @@ public class StatManager : MonoBehaviour
         }
     }*/
 
-    private void Start()
+    private void Awake()
     {
         Health = GetComponent<Health>();
         if(Health != null )
@@ -118,6 +121,13 @@ public class StatManager : MonoBehaviour
         }
 
     }
+    public void AddStatDefault(Stat stat)
+    {
+        if (!statDictionary.ContainsKey(stat))
+        {
+            statDictionary.Add(stat, defaultValues[stat]);
+        }
+    }
 
     public bool HasStat(Stat stat)
     {
@@ -144,4 +154,34 @@ public class StatManager : MonoBehaviour
 
         return st;
     }
+
+    private static Dictionary<Stat, float> defaultValues = new Dictionary<Stat, float>
+    {
+        {Stat.maxHealth, 10},
+        {Stat.damage, 1},
+        {Stat.moveSpeed, 1},
+        {Stat.lifeSpan, 1 },
+        {Stat.rotateSpeed,10 },
+        {Stat.fireRate, 1},
+        {Stat.pierceCount, 0},
+        {Stat.sizeX,1 },
+        {Stat.sizeY,1},
+        {Stat.fireCount,1 },
+        {Stat.critChance, .05f },
+        {Stat.critRatio, 1.5f },
+        {Stat.range, 5 },
+        {Stat.coneAngle, 20 },
+        {Stat.projectileSpeed, 10 },
+        {Stat.shopPriceModifier, 1 },
+        {Stat.shopItemCount, 1 },
+        {Stat.level, 1 },
+        {Stat.critBounce,  0 },
+        {Stat.targetMax, 1 },
+        {Stat.firePoints, 1},
+        {Stat.trackingStrength, 1},
+        {Stat.projectileTargetRadius, 1},
+        {Stat.magSize, 1},
+        {Stat.reloadTime, 0},
+        {Stat.luck , 1},
+    };
 }

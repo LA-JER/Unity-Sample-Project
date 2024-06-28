@@ -12,33 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Turret A1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  upgradeName: Faster Arms
-  upgradeDescription: Shoot 25% faster
-  price: 18
+  icon: {fileID: -390260477, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
+  upgradeName: Ice Tipped Arrows
+  upgradeDescription: Hits slow targets for a short duration
+  price: 26
   statDictionary:
     _serializedList:
-    - Key: 5
+    - Key: 10
+      Value:
+        operation: 0
+        modifier: 0.15
+    - Key: 11
       Value:
         operation: 1
-        modifier: 1.25
-    - Key: 4
-      Value:
-        operation: 1
-        modifier: 1.25
-    - Key: 14
-      Value:
-        operation: 1
-        modifier: 1.25
+        modifier: 1.15
   spriteGroup:
     turretSprites:
       _serializedList:
       - Key: 0
-        Value: {fileID: 0}
-      - Key: 1
-        Value: {fileID: 21300000, guid: 579c6d472a62ec54a9c671ea9f455030, type: 3}
-      - Key: 2
-        Value: {fileID: 0}
+        Value: {fileID: 21300000, guid: 55a437a3790c1b84db7b620cfa52441c, type: 3}
   nextUpgrades:
-  - {fileID: 11400000, guid: 83981184a08aeb94d92cb99aa32b434a, type: 2}
-  projectileModules: []
+  - {fileID: 11400000, guid: bc5b7df09301ae649b751a117f465a4e, type: 2}
+  projectileModulesPrefabs:
+  - {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}
+  turretItemsPrefabs: []

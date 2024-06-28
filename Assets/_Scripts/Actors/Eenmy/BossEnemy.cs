@@ -6,7 +6,8 @@ public class BossEnemy : Enemy
 {
     [SerializeField] private GameObject babyprefab;
     [SerializeField] private int babyCount;
-    [SerializeField] private Buff turretDebuff;
+    //[SerializeField] private Buff turretDebuff;
+    public string debuffTag = "TurretSpace";
 
     public override void OnBaseCollide(Collider2D collision)
     {
@@ -48,14 +49,8 @@ public class BossEnemy : Enemy
 
     public override void OnTurretCollide(Collider2D collision)
     {
-        //prevents triggering from their range radius
-        if (!collision.isTrigger)
-        {
-            BuffManager buffManager = collision.GetComponent<BuffManager>();
-            if(buffManager != null)
-            {
-                buffManager.ApplyTimedBuff(turretDebuff);
-            }
-        }
+        return;
     }
+
+    
 }

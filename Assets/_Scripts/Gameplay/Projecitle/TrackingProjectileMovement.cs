@@ -12,7 +12,10 @@ public class TrackingProjectileMovement : ProjectileMovement
     [SerializeField] private TargetingStyle targetingStyle;
     [SerializeField] private float coastSpeedRatio;
 
-    private List<Transform> targets = new List<Transform>();
+    private void Awake()
+    {
+        usesFixedUpdate = true;
+    }
 
     private void Start()
     {
@@ -20,7 +23,7 @@ public class TrackingProjectileMovement : ProjectileMovement
         {
             if(rangeCollider != null)
             {
-                rangeCollider.radius = projectile.GetStat(Stat.trackingSize);
+                rangeCollider.radius = projectile.GetStat(Stat.projectileTargetRadius);
             }
         }
     }
@@ -30,6 +33,7 @@ public class TrackingProjectileMovement : ProjectileMovement
         //FindTargetsWithSphereCast(transform.position, Vector3.forward, range, range, layerMask);
         if(projectile == null) { return; }
 
+        //get 1 target based on chosen targeting style
         List<Transform> target = TargetingChip(targets, targetingStyle, 1, transform, rangeCollider.radius);
         if (target != null && target.Count >0)
         {
@@ -51,44 +55,6 @@ public class TrackingProjectileMovement : ProjectileMovement
         {
             //projectile.rb.velocity = Vector2.up * ( projectile.GetStat(Stat.projectileSpeed) * coastSpeedRatio);
             projectile.transform.Translate(Vector2.up * projectile.GetStat(Stat.projectileSpeed) * coastSpeedRatio * Time.deltaTime);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag(projectile.GetEnemyTag()))
-        {
-            ITargetable targetable = collision.GetComponent<ITargetable>();
-            if (targetable != null)
-            {
-                if (targetable.IsTargetable())
-                {
-                    if (!targets.Contains(collision.transform))
-                    {
-                        targets.Add(collision.transform);
-                    }
-                }
-
-            }
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag(projectile.GetEnemyTag()))
-        {
-            ITargetable targetable = collision.GetComponent<ITargetable>();
-            if (targetable != null)
-            {
-                if (targetable.IsTargetable())
-                {
-                    if (targets.Contains(collision.transform))
-                    {
-                        targets.Remove(collision.transform);
-                    }
-                }
-
-            }
         }
     }
 

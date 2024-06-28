@@ -12,12 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Turret B1 1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -858058595, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Weaken Aura
   upgradeDescription: Hits against targets temporarily lowers their damage
-  price: 17
+  price: 25
   statDictionary:
-    _serializedList: []
+    _serializedList:
+    - Key: 14
+      Value:
+        operation: 0
+        modifier: 5
+    - Key: 4
+      Value:
+        operation: 0
+        modifier: 5
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -28,5 +36,6 @@ MonoBehaviour:
       - Key: 2
         Value: {fileID: 0}
   nextUpgrades: []
-  projectileModules:
+  projectileModulesPrefabs:
   - {fileID: 2975609194170787549, guid: 8a55894ae21b87b49b9ac541d2dfa029, type: 3}
+  turretItemsPrefabs: []

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Turret 1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -1244850793, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Pointy Arrows
   upgradeDescription: Increases DMG by +3
   price: 10
@@ -32,6 +32,7 @@ MonoBehaviour:
       - Key: 2
         Value: {fileID: 0}
   nextUpgrades:
-  - {fileID: 11400000, guid: bc5b7df09301ae649b751a117f465a4e, type: 2}
+  - {fileID: 11400000, guid: 83981184a08aeb94d92cb99aa32b434a, type: 2}
   - {fileID: 11400000, guid: e720d51b2cf1ccf4e920ac6bd66c0607, type: 2}
-  hitEffects: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

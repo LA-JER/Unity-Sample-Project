@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7393570189807960563}
   - component: {fileID: 1583154926179135515}
   - component: {fileID: 5229293208778377935}
+  - component: {fileID: 6891099979403386544}
   m_Layer: 0
   m_Name: Damage Number
   m_TagString: Untagged
@@ -93,8 +94,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1
-  m_fontSizeBase: 1
+  m_fontSize: 2
+  m_fontSizeBase: 2
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -150,4 +151,26 @@ MonoBehaviour:
   moveSpeed: 1
   fadeSpeed: 1
   duration: 1.5
+  entryClip: {fileID: 7400000, guid: 6e9fc5d90d4170642b34bab30b0f8da7, type: 2}
   textMeshPro: {fileID: 1583154926179135515}
+--- !u!95 &6891099979403386544
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093318227203962524}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 21d2c10940a1b0a4fb63af7b40ec405d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

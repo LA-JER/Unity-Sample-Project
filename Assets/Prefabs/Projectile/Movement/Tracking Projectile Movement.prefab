@@ -46,9 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectile: {fileID: 0}
+  usesFixedUpdate: 1
+  targets: []
   rangeCollider: {fileID: -254972928950162621}
   targetingStyle: 0
-  coastSpeedRatio: 0.5
+  coastSpeedRatio: 0.35
 --- !u!58 &-254972928950162621
 CircleCollider2D:
   m_ObjectHideFlags: 0

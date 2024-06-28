@@ -12,12 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: SNP A 2
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  upgradeName: Ice Cubes
-  upgradeDescription: Arrows slow targets
+  icon: {fileID: -858058595, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
+  upgradeName: Lucky Penny
+  upgradeDescription: Massively increases critical chance and DMG
   price: 45
   statDictionary:
-    _serializedList: []
+    _serializedList:
+    - Key: 10
+      Value:
+        operation: 0
+        modifier: 0.55
+    - Key: 11
+      Value:
+        operation: 0
+        modifier: 1
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -28,5 +36,5 @@ MonoBehaviour:
       - Key: 0
         Value: {fileID: 0}
   nextUpgrades: []
-  projectileModules:
-  - {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

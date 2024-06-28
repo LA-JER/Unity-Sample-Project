@@ -11,6 +11,7 @@ public class HurtBox : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (projectile == null) return;
+        //Debug.Log("proejctile hurt box entered");
         projectile.OnHurtBoxEntered(collision);
     }
 

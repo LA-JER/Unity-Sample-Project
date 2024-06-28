@@ -11,7 +11,7 @@ public static class DataHandler
         totalTime,
         totalSpent,
         showDamageNumbers,
-        totalWon,
+        totalWins,
     }
 
     public static string totalDamage = "totalDamage";
@@ -70,7 +70,7 @@ public static class DataHandler
             case Flag.totalTime: return totalTime;
             case Flag.totalSpent: return totalSpent;
             case Flag.showDamageNumbers: return showDamageNumbers;
-            case Flag.totalWon: return totalWon;
+            case Flag.totalWins: return totalWon;
             default: return null;
         }
     }
@@ -83,7 +83,7 @@ public static class DataHandler
         Flag.totalTime,
         Flag.totalSpent,
         Flag.showDamageNumbers,
-        Flag.totalWon,
+        Flag.totalWins,
 
 
 

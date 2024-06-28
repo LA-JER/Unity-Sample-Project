@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2092121152149726175
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: range
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.ID
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: color.b
+      value: 0.509434
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: color.g
+      value: 0.30037382
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: color.r
+      value: 0.39001614
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: cooldown
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: lifespan
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: targetTag
+      value: TurretSpace
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.duration
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.maxStacks
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[0].Key
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[1].Key
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[0].Value.modifier
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[1].Value.modifier
+      value: 1.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[0].Value.operation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814005151687412638, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: buff.affectedStats._serializedList.Array.data[1].Value.operation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347862547515258874, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_Radius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5405811056794889303, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5820600720322755876, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}
+      propertyPath: m_Name
+      value: Sniper Buff Aura Variant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4dba9b5ee12bb9d43b95d72d1e214c29, type: 3}

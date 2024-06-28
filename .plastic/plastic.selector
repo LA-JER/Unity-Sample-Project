@@ -1,4 +1,3 @@
-repository "Tower Defense Demo@localgore@cloud"
+rep "Tower Defense Demo@localgore@cloud"
   path "/"
-    br "/main"
-    co "/main"
+    smartbranch "/main"

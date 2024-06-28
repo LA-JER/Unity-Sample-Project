@@ -17,7 +17,7 @@ public class BuffVFXManager : MonoBehaviour
         buffManager = GetComponent<BuffManager>();
         if(buffManager != null)
         {
-            buffManager.OnBuffApply += BuffManager_OnBuffApply;
+            buffManager.OnBuffChange += BuffManager_OnBuffApply;
         } else
         {
             Debugger.Log(Debugger.AlertType.Warning, "Could not find buff manager, did you forget to add the component?");
@@ -54,7 +54,7 @@ public class BuffVFXManager : MonoBehaviour
     {
         if (buffManager != null)
         {
-            buffManager.OnBuffApply -= BuffManager_OnBuffApply;
+            buffManager.OnBuffChange -= BuffManager_OnBuffApply;
         }
     }
 }

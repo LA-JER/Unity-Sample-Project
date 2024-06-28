@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Ice _Root
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -1244850793, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Sharp Shards
   upgradeDescription: 'Increases RANGE '
   price: 7
@@ -22,6 +22,10 @@ MonoBehaviour:
       Value:
         operation: 0
         modifier: 3
+    - Key: 3
+      Value:
+        operation: 0
+        modifier: 0.5
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -30,4 +34,5 @@ MonoBehaviour:
   nextUpgrades:
   - {fileID: 11400000, guid: eda9ab5309178004c9ca676ce48c7310, type: 2}
   - {fileID: 11400000, guid: 304630baa984cfc44bd7700471a08820, type: 2}
-  projectileModules: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

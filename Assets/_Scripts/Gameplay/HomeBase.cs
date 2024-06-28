@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class HomeBase : MonoBehaviour
 {
-    public delegate void BaseHealthZero();
-    public static event BaseHealthZero OnBaseDie;
+    public delegate void BaseHealthChange();
+    public static event BaseHealthChange OnBaseDie;
+    public static event BaseHealthChange OnBaseDamaged;
 
     private Health Health;
     // Start is called before the first frame update
@@ -13,6 +14,12 @@ public class HomeBase : MonoBehaviour
     {
         Health = GetComponent<Health>();
         Health.onHealthZero += Health_onHealthZero;
+        Health.onHealthDamage += Health_onHealthDamage;
+    }
+
+    private void Health_onHealthDamage(float amount, bool isCritical)
+    {
+        OnBaseDamaged?.Invoke();
     }
 
     private void Health_onHealthZero(GameObject source)

@@ -22,6 +22,6 @@ public class WeightedElement<T> : IComparable<WeightedElement<T>>
 
     public override string ToString()
     {
-        return $"Node (Value: {Value}, Weight: {Weight})";
+        return $"WeightedElement (Value: {Value}, Weight: {Weight})";
     }
 }

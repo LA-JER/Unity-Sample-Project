@@ -24,6 +24,7 @@ public class UpgradeDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI sell;
     [SerializeField] private GameObject display;
     [SerializeField] private RectTransform view;
+    public float offset = 220;
     [SerializeField] private RectTransform dropOptions;
     [SerializeField] private RectTransform content;
     [SerializeField] private GameObject portraitPrefab;
@@ -140,7 +141,7 @@ public class UpgradeDisplay : MonoBehaviour
 
     public void Sell()
     {
-        Shop.RefundTurret(currentTurret, false);
+        Shop.Instance.RefundPurchase(currentTurret, false);
     }
 
     public void ChangeSearchType()
@@ -229,11 +230,28 @@ public class UpgradeDisplay : MonoBehaviour
         {
             if(display != null && display.activeSelf)
             {
-                    Vector2 screenPoint = Camera.main.WorldToScreenPoint(currentTurret.transform.position);
-                    Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
+                Vector2 screenPoint = Camera.main.WorldToScreenPoint(currentTurret.transform.position);
+                //Vector2 clampedPoint = ClampToCanvasEdge(view, screenPoint);
 
-                    display.transform.position = clampedPoint;
-                
+                display.transform.position = screenPoint;
+
+                if (IsPointOnRightSide(screenPoint))
+                {
+                    if (view.anchoredPosition != new Vector2(-offset, 0))
+                    {
+                        view.anchoredPosition -= new Vector2(offset, 0);
+                    }
+
+
+                }
+                else
+                {
+                    if (view.anchoredPosition != new Vector2(offset, 0))
+                    {
+                        view.anchoredPosition += new Vector2(offset, 0);
+                    }
+                }
+
             }
         }
     }
@@ -285,6 +303,11 @@ public class UpgradeDisplay : MonoBehaviour
         }
     }
 
+    public bool IsPointOnRightSide(Vector2 screenPoint)
+    {
+        float screenWidth = Screen.width;
+        return screenPoint.x > screenWidth / 2;
+    }
     Vector2 ClampToCanvasEdge(RectTransform view, Vector2 screenPoint)
     {
 

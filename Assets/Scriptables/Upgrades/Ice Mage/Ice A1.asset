@@ -12,36 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: Ice A1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
-  upgradeName: Diamond Edge
-  upgradeDescription: Shards track enemies
-  price: 22
+  icon: {fileID: -390260477, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
+  upgradeName: Chilled Fingers
+  upgradeDescription: Shards always slow targets
+  price: 40
   statDictionary:
     _serializedList:
     - Key: 3
       Value:
         operation: 0
-        modifier: 3
-    - Key: 23
-      Value:
-        operation: 2
-        modifier: 7
-    - Key: 22
-      Value:
-        operation: 2
-        modifier: 3
+        modifier: 1
     - Key: 7
       Value:
         operation: 1
-        modifier: 0.5
+        modifier: 2
     - Key: 8
       Value:
         operation: 1
-        modifier: 0.5
-    - Key: 14
-      Value:
-        operation: 2
-        modifier: 3.25
+        modifier: 1.25
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -49,5 +37,6 @@ MonoBehaviour:
         Value: {fileID: 21300000, guid: c480cc53db5a98e48bec2d0e0a75234d, type: 3}
   nextUpgrades:
   - {fileID: 11400000, guid: 20dd21904354b6e48a747313e8bc7c8a, type: 2}
-  projectileModules:
-  - {fileID: 1634536763209104890, guid: 26770c15c18230d448846e145359f103, type: 3}
+  projectileModulesPrefabs:
+  - {fileID: 3766711124625571799, guid: 5b10f3601cb226c4282b8f84ca5f2a6c, type: 3}
+  turretItemsPrefabs: []

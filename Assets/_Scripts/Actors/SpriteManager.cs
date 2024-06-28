@@ -15,21 +15,55 @@ public class SpriteManager : MonoBehaviour
 
     private Vector2 startScale = Vector2.zero;
     private bool showRadius = true;
+    private Turret owner;
+    private Color eatenColor = Color.red;
+    private Color consumerColor = Color.yellow;
+    private Color originalColor;
 
     // Start is called before the first frame update
     void Start()
     {
         startScale = radiusSpriteRenderer.transform.localScale;
         UpgradeDisplay.OnUpgradeDisplay += ShowRadius;
+        CombineManager.OnPossibleConsume += CombineManager_OnPossibleConsume;
+        CombineManager.OnNoConsume += CombineManager_OnNoConsume;
         ShowSprites(currentSpriteGroup);
-        
+        owner = GetComponent<Turret>();
+        if(owner != null )
+        {
+            owner.OnDeactivate += Owner_OnDeactivate;
+            owner.OnActivate += Owner_OnActivate;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void CombineManager_OnNoConsume(GameObject consumer, GameObject eaten)
     {
-        
+        ChangeSpriteColor(originalColor);
     }
+
+    private void CombineManager_OnPossibleConsume(GameObject consumer, GameObject eaten)
+    {
+        originalColor = midSpriteRenderer.color;
+        if(consumer == owner.gameObject)
+        {
+            ChangeSpriteColor(consumerColor);
+        } 
+        else if(eaten == owner.gameObject)
+        {
+            ChangeSpriteColor(eatenColor);
+        }
+    }
+
+    private void Owner_OnActivate()
+    {
+        ShowSpriteCanPlace(true);
+    }
+
+    private void Owner_OnDeactivate()
+    {
+        ShowSpriteCanPlace(false);
+    }
+
 
     void FixedUpdate()
     {
@@ -64,6 +98,11 @@ public class SpriteManager : MonoBehaviour
         }
     }
 
+    void ChangeSpriteColor(Color color)
+    {
+        midSpriteRenderer.color = new Color(color.r, color.g, color.b, originalColor.a);
+    }
+
     public void ShowSprites(TurretSpriteGroup spriteGroup)
     {
         if (spriteGroup == null) return;
@@ -96,6 +135,13 @@ public class SpriteManager : MonoBehaviour
     private void OnDestroy()
     {
         //UpgradeNodeManager.OnShowUpgrades -= UpgradeNodeManager_OnShowUpgrades;
-        UpgradeDisplay.OnUpgradeDisplay += ShowRadius;
+        UpgradeDisplay.OnUpgradeDisplay -= ShowRadius;
+        CombineManager.OnPossibleConsume -= CombineManager_OnPossibleConsume;
+        CombineManager.OnNoConsume -= CombineManager_OnNoConsume;
+        if (owner != null)
+        {
+            owner.OnDeactivate -= Owner_OnDeactivate;
+            owner.OnActivate -= Owner_OnActivate;
+        }
     }
 }

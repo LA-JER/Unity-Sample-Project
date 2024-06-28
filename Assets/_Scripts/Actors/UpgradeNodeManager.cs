@@ -7,40 +7,51 @@ public class UpgradeNodeManager : MonoBehaviour
     public delegate void UpgradeHandler(List<UpgradeNode> upgradeNodes, GameObject owner, Vector2 worldPosition, string title);
     public static event UpgradeHandler OnShowUpgrades;
 
-    [SerializeField] private UpgradeNode startNode;
-    [SerializeField] private Turret owner;
+    [SerializeField] private List<UpgradeNode> startNodes = new List<UpgradeNode>();
+    
     [SerializeField] private Transform spawn;
 
     public List<UpgradeNode> availableUpgrades = new List<UpgradeNode>();
 
-    private Collider2D collide;
+    //private Collider2D collide;
+    private Turret owner;
+    private InputHandler handler;
 
     private void Awake()
     {
         UpgradeDisplay.OnBuyUpgrade += UpgradeDisplay_OnBuyUpgrade;
-        if(owner != null)
+        handler = GetComponent<InputHandler>();
+        if(handler != null)
         {
-            owner.OnActivate += Owner_OnActivate;
+            owner = handler.GetOwner();
+            handler.OnMouseUpEvent += Handler_OnMouseUp;
         }
         
     }
 
-    private void Owner_OnActivate()
+    private void Handler_OnMouseUp()
     {
-        if (collide == null) return;
-        collide.enabled = true;
+        IHoverInfo hoverInfo = owner.GetComponent<IHoverInfo>();
+        if (hoverInfo != null)
+        {
+            OnShowUpgrades?.Invoke(availableUpgrades, owner.gameObject, spawn.position, hoverInfo.GetName());
+        }
     }
 
     private void Start()
     {
-        if(startNode != null)
+        if(startNodes != null)
         {
-            availableUpgrades.Add(startNode);
+            foreach(UpgradeNode startNode in startNodes)
+            {
+                availableUpgrades.Add(startNode);
+            }
+            
         } else
         {
             Debugger.Log(Debugger.AlertType.Warning, $"{name} ddi not have an upgrade path, did you forget to set one?");
         }
-        collide = GetComponent<Collider2D>();
+        //collide = GetComponent<Collider2D>();
 
     }
     private void UpgradeDisplay_OnBuyUpgrade(GameObject owner, UpgradeNode chosenUpgrade)
@@ -69,26 +80,14 @@ public class UpgradeNodeManager : MonoBehaviour
         }
     }
 
-    private void OnMouseUp()
-    {
-            IHoverInfo hoverInfo = owner.GetComponent<IHoverInfo>();
-            if (hoverInfo != null)
-            {
-                OnShowUpgrades?.Invoke(availableUpgrades, owner.gameObject, spawn.position, hoverInfo.GetName());
-            }      
-    }
-
-    public Transform GetSpawn()
-    {
-        return spawn;
-    }
 
     private void OnDestroy()
     {
         UpgradeDisplay.OnBuyUpgrade -= UpgradeDisplay_OnBuyUpgrade;
-        if (owner != null)
+        if(handler != null)
         {
-            owner.OnActivate -= Owner_OnActivate;
+            handler.OnMouseUpEvent += Handler_OnMouseUp;
         }
+        
     }
 }

@@ -15,12 +15,23 @@ public class ContinueButton : MonoBehaviour
     private void Awake()
     {
         WaveManager.OnWaveEnd += WaveManager_OnWaveEnd;
+        WaveManager.OnWaveSkip += WaveManager_OnWaveSkip;
     }
 
-    private void WaveManager_OnWaveEnd()
+    private void WaveManager_OnWaveSkip()
     {
-        canClick = true;
+        canClick = false;
         EnableImage(canClick);
+    }
+
+    private void WaveManager_OnWaveEnd(WaveGroup group, bool isLast)
+    {
+        if (!isLast)
+        {
+            canClick = true;
+            EnableImage(canClick);
+        }
+        
     }
 
     public void Click()
@@ -36,5 +47,11 @@ public class ContinueButton : MonoBehaviour
         {
             image.enabled = enable;
         }
+    }
+
+    private void OnDestroy()
+    {
+        WaveManager.OnWaveEnd -= WaveManager_OnWaveEnd;
+        WaveManager.OnWaveSkip -= WaveManager_OnWaveSkip;
     }
 }

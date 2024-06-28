@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 public class AlertManager : MonoBehaviour
 {
     public delegate void Alert(bool isShown);
@@ -12,6 +11,7 @@ public class AlertManager : MonoBehaviour
     public static AlertManager instance;
 
     [SerializeField] private GameObject alertScreen;
+    [SerializeField] private List<Image> alertImages = new List<Image>();
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI description;
     [SerializeField] private Image icon;
@@ -19,6 +19,8 @@ public class AlertManager : MonoBehaviour
 
     private Animator animator;
     private float exitTime = 1f;
+
+    private bool clickable = true;
     private void Awake()
     {
         if(instance == null)
@@ -39,13 +41,14 @@ public class AlertManager : MonoBehaviour
         alertScreen.SetActive(false);
     }
 
-    public void ShowAlert(string title, string description, Sprite sprite)
+    public void ShowAlert(string title, string description, Sprite sprite, Color color)
     {
         if (alertScreen == null) return;
-
+        clickable = true;
         this.title.text = title;
         this.description.text = description;
         this.icon.sprite = sprite;
+        SetBGColor(color);
         Debugger.Log(Debugger.AlertType.Info, "Showing Alert!");
         OnAlert?.Invoke(true);
         alertScreen.SetActive(true);
@@ -53,11 +56,16 @@ public class AlertManager : MonoBehaviour
 
     public void HideAlert()
     {
-        if (alertScreen == null) return;
-        Debugger.Log(Debugger.AlertType.Info, "Hiding Alert!");
-        OnAlert?.Invoke(false);
-        animator.SetTrigger("Exit");
-        StartCoroutine(DelayDisable(exitTime));
+        if(clickable)
+        {
+            clickable = false;
+            if (alertScreen == null) return;
+            Debugger.Log(Debugger.AlertType.Info, "Hiding Alert!");
+            OnAlert?.Invoke(false);
+            animator.SetTrigger("Exit");
+            StartCoroutine(DelayDisable(exitTime));
+        }
+        
     }
 
     private IEnumerator DelayDisable( float duration)
@@ -66,5 +74,17 @@ public class AlertManager : MonoBehaviour
         alertScreen.SetActive(false);
         //Time.timeScale = 1;
         yield return null;
+    }
+
+    void SetBGColor( Color color)
+    {
+        foreach(Image image in alertImages)
+        {
+            if (image == null)
+            {
+                continue;
+            }
+            image.color = color;
+        }
     }
 }

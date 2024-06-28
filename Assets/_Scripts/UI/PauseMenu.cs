@@ -1,22 +1,25 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuUI;
     public delegate void PauseHandler(bool isPaused);
     public static event PauseHandler onPauseToggle;
+    public static event PauseHandler onWorldStop;
 
-    private bool canPause = true;
-    private bool isPaused = false;
+    [SerializeField] private TextMeshProUGUI fullscreenText;
+
+    private bool shouldPause = false;
     private float previousTimeScale = 1f;
+    private bool isMenuUp = true;
+    private bool toggle = false;
 
     private void Start()
     {
-        if(pauseMenuUI != null)
+        if (pauseMenuUI != null)
         {
             pauseMenuUI.SetActive(false);
         }
@@ -24,7 +27,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             TogglePauseMenu();
         }
@@ -34,13 +37,28 @@ public class PauseMenu : MonoBehaviour
     {
         if (pauseMenuUI != null)
         {
-            isPaused = !pauseMenuUI.activeSelf;
-            pauseMenuUI.SetActive(isPaused);
-            onPauseToggle?.Invoke(isPaused);
+            shouldPause = !pauseMenuUI.activeSelf;
+            pauseMenuUI.SetActive(shouldPause);
+            onPauseToggle?.Invoke(shouldPause);
             // Pause or resume the game based on the pause state
-            Time.timeScale = isPaused ? 0f : previousTimeScale;
+            Time.timeScale = shouldPause ? 0f : previousTimeScale;
 
         }
+    }
+
+    public void TogglePause()
+    {
+
+        //isPaused = !pauseMenuUI.activeSelf;
+        //pauseMenuUI.SetActive(isPaused);
+        //onPauseToggle?.Invoke(isPaused);
+        // Pause or resume the game based on the pause state
+        
+        //Time.timeScale = shouldPaused ? 0f : previousTimeScale;
+        toggle = !toggle;
+        onWorldStop?.Invoke(toggle);
+
+        
     }
 
     public void ToggleDamageNumbers()
@@ -62,5 +80,33 @@ public class PauseMenu : MonoBehaviour
         //SceneTransitioner.Instance.ReloadLevel();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
+    }
+
+    public void ToggleFullscreenMode()
+    {
+        // Toggle the fullscreen mode
+        Screen.fullScreen = !Screen.fullScreen;
+
+        // Update the button text based on the new fullscreen mode
+        if (fullscreenText != null)
+        {
+
+            fullscreenText.text = Screen.fullScreen ? "Enter Fullscreen" : "Exit Fullscreen";
+        }
+    }
+
+    public void ToggleMenu(Animator animator)
+    {
+        if (animator == null) return;
+
+        if (isMenuUp)
+        {
+            animator.SetTrigger("Exit");
+            
+        } else
+        {
+            animator.SetTrigger("Entry");
+        }
+        isMenuUp = !isMenuUp;
     }
 }

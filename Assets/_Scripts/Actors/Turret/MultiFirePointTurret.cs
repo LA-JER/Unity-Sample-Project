@@ -28,7 +28,7 @@ public class MultiFirePointTurret : Turret
                 Projectile projectile1 = projectile.GetComponent<Projectile>();
                 if (projectile1 != null)
                 {
-                    projectile1.Initialize(gameObject, statManager, true);
+                    projectile1.Initialize(gameObject, statManager, GetCapabilities(), true);
                     projectileManager.InitializeModules(projectile1);
                 }
                 else

@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e6ecc511cb84d64aa643184c3bac747, type: 3}
   m_Name: SNP 1
   m_EditorClassIdentifier: 
-  icon: {fileID: 0}
+  icon: {fileID: -1244850793, guid: 4d499c9b7d93ad34cb147a8b84295028, type: 3}
   upgradeName: Telescope
-  upgradeDescription: Range +5
+  upgradeDescription: Range +8
   price: 12
   statDictionary:
     _serializedList:
     - Key: 12
       Value:
         operation: 0
-        modifier: 5
+        modifier: 8
   spriteGroup:
     turretSprites:
       _serializedList:
@@ -34,4 +34,5 @@ MonoBehaviour:
   nextUpgrades:
   - {fileID: 11400000, guid: 89fd2d5694fbbc54db4897f6495fd959, type: 2}
   - {fileID: 11400000, guid: b93e1bec774333544bed8d3049b99df3, type: 2}
-  hitEffects: []
+  projectileModulesPrefabs: []
+  turretItemsPrefabs: []

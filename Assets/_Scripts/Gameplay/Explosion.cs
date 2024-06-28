@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
+using static ITargetable;
 using static StatManager;
 
 public class Explosion : DamageElement
 {
     public string targetTag = "Enemy";
+    public float constantStopScale = .25f;
 
     private StatManager statManager;
     private Vector3 initialScale;
    // private float waitInterval = .125f;
 
-    private List<Health> damagedList = new List<Health>();
+    private List<GameObject> damagedList = new List<GameObject>();
     //private bool isScaling = false;
     // Start is called before the first frame update
     void Start()
@@ -22,7 +25,7 @@ public class Explosion : DamageElement
         Destroy(gameObject, statManager.GetStat(StatManager.Stat.lifeSpan ));
     }
 
-    public override void Initialize(GameObject source, StatManager other, bool setSizeAtStart = false)
+    public override void Initialize(GameObject source, StatManager other, Dictionary<PlayArea, bool> targetsCapable, bool setSizeAtStart = false)
     {
         //Debugger.Log(Debugger.AlertType.Info, $"Projectile.Initialize called with statManager {statManager} and other statManager: {other}");
         if (other != null)
@@ -43,6 +46,13 @@ public class Explosion : DamageElement
         {
             this.source = source;
         }
+        if (targetsCapable != null)
+        {
+            foreach (var capable in targetsCapable)
+            {
+                targetsCapable.Add(capable.Key, capable.Value);
+            }
+        }
     }
 
     private IEnumerator ScaleOverTime()
@@ -50,7 +60,7 @@ public class Explosion : DamageElement
         //isScaling = true;
         float elapsedTime = 0f;
 
-        while (elapsedTime < statManager.GetStat(StatManager.Stat.lifeSpan))
+        while (elapsedTime < (statManager.GetStat(StatManager.Stat.lifeSpan) - constantStopScale))
         {
             elapsedTime += Time.deltaTime;
             float t = elapsedTime / statManager.GetStat(StatManager.Stat.lifeSpan);
@@ -58,7 +68,7 @@ public class Explosion : DamageElement
             float sizeX = statManager.GetStat(StatManager.Stat.sizeX);
             float sizeY = statManager.GetStat(StatManager.Stat.sizeY);
 
-            transform.localScale = Vector3.Lerp(initialScale, new Vector2(sizeX, sizeY), 1/t);
+            transform.localScale = Vector3.Lerp(initialScale, new Vector2(sizeX, sizeY), t);
             yield return new WaitForEndOfFrame();
         }
 
@@ -66,23 +76,28 @@ public class Explosion : DamageElement
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision != null)
-        {
-            if(collision.CompareTag(targetTag))
+        if (collision == null) return;
+
+        if (collision.CompareTag(targetTag) == false) return;
+
+
+        // get the targetable component
+        ITargetable targetable = collision.GetComponent<ITargetable>();
+        if (targetable == null) return;
+
+        if (CanTarget(targetable.GetPlayableArea()) == false) return;
+
+        //ensure we only damage enemies once
+        //prevents enemies that leave and enter the explosion quickly from getting hurt twice
+        if (!damagedList.Contains(collision.gameObject))
             {
-                Health health = collision.GetComponent<Health>();
-                if(health != null)
-                {
-                    //ensure we only damage enemies once
-                    //prevents enemies that leave and enter the explosion quickly from getting hurt twice
-                    if (!damagedList.Contains(health))
-                    {
-                        DamageInstance dmg = DealDamage(source, statManager, health);
-                        damagedList.Add(health);
-                    }
-                }
-            }
+                DamageInstance dmg = DealDamage(source, statManager, collision.gameObject);
+                damagedList.Add(collision.gameObject);
+            DoEffects(collision.gameObject);
         }
+                
+        
+        
     }
 
 }

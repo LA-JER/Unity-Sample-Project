@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3097506050620933240}
   - component: {fileID: 882826829988596592}
   - component: {fileID: 4755565802287035429}
+  - component: {fileID: 5180313232100719074}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: Untagged
@@ -99,6 +100,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13f2c0644fac2344286e1e08dc0437d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  source: {fileID: 0}
+  targetsCapable:
+    _serializedList:
+    - Key: 0
+      Value: 1
+    - Key: 1
+      Value: 0
+    - Key: 2
+      Value: 0
   targetTag: Enemy
 --- !u!114 &882826829988596592
 MonoBehaviour:
@@ -115,7 +125,7 @@ MonoBehaviour:
   statDictionary:
     _serializedList:
     - Key: 1
-      Value: 5
+      Value: 10
     - Key: 3
       Value: 0.85
     - Key: 7
@@ -161,3 +171,21 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &5180313232100719074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3130821633938366040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4501a661639a0e4c9112e7f127ccce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buffs:
+    _serializedList: []
+  buffTimeLeft:
+    _serializedList: []
+  baseStats:
+    _serializedList: []

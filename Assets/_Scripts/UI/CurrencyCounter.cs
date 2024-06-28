@@ -11,7 +11,7 @@ public class CurrencyCounter : MonoBehaviour
 
     private void Awake()
     {
-        CurrencyManager.onCurrencyChange += CurrencyManager_onCurrencyChange;
+        CurrencyManager.onTotalChange += CurrencyManager_onCurrencyChange;
     }
 
     private void CurrencyManager_onCurrencyChange(int newValue)
@@ -22,6 +22,6 @@ public class CurrencyCounter : MonoBehaviour
 
     private void OnDestroy()
     {
-        CurrencyManager.onCurrencyChange -= CurrencyManager_onCurrencyChange;
+        CurrencyManager.onTotalChange -= CurrencyManager_onCurrencyChange;
     }
 }

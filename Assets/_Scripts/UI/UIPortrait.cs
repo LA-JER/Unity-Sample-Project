@@ -9,8 +9,11 @@ public abstract class UIPortrait : MonoBehaviour, IPointerEnterHandler, IPointer
     public delegate void PortraitHover(Vector2 position, string name, string desc, bool isCursorIn);
     public static event PortraitHover OnPortraitHover;
 
+    
+
     public Image icon;
     public Transform toolTipSpawn;
+    public Button button;
     public string actorName;
     public string actorDesc;
     public int price = 0;
@@ -29,6 +32,7 @@ public abstract class UIPortrait : MonoBehaviour, IPointerEnterHandler, IPointer
     {
         OnPortraitHover?.Invoke(toolTipSpawn.position, actorName, actorDesc, false);
     }
+
 
     private void OnDestroy()
     {

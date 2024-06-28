@@ -7,8 +7,8 @@ public class GameManager : MonoBehaviour
     public delegate void OnGame(bool won);
     public static event OnGame OnGameEnd;
 
-    //public delegate void OnPause(bool isPaused);
-    //public static event OnPause OnPaused;
+    public delegate void OnPause(bool isPaused);
+    public static event OnPause OnPaused;
 
     public static GameManager Instance;
 
@@ -20,11 +20,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float refundPercent = 0.5f;
 
     private List<Turret> turrets = new List<Turret>();
-    private float elapsedTime = 0;
+    public float elapsedTime = 0;
     private int kills = 0;
     private int currencySpent = 0;
     private bool gameDone = false;
-    public bool isGamePaused = false;
+    private bool isGamePaused = false;
     private void Awake()
     {
         if(Instance == null)
@@ -37,25 +37,32 @@ public class GameManager : MonoBehaviour
         Debugger.print = printType;
 
         HomeBase.OnBaseDie += GameOver;
-        Shop.OnBuyTurret += Shop_OnBuyTurret;
+        CurrencyManager.onPurchase += CurrencyManager_onPurchase;
+        CurrencyManager.onRefund += CurrencyManager_onRefund;
         Enemy.OnEnemyKilled += Enemy_OnEnemyDeath;
-        WaveManager.OnGameDone += GameWon;
-        AlertManager.OnAlert += AlertManager_OnAlert;
+        WaveManager.OnAllEnemiesKilled += GameWon;
+        AlertManager.OnAlert += Pause;
+        PauseMenu.onWorldStop += Pause;
+
+        StartCoroutine(RealTimeElapsed());
     }
 
-    private void AlertManager_OnAlert(bool isShown)
+    private void CurrencyManager_onRefund(int refund)
     {
-        Debug.Log("is shown is:" + isShown);
-        if(isShown)
-        {
-            //OnPaused?.Invoke(true);
-            isGamePaused = true;
-        }
-        else
-        {
-           //OnPaused?.Invoke(false);
-            isGamePaused = false;
-        }
+        currencySpent -= refund;
+    }
+
+    private void CurrencyManager_onPurchase(int purchase)
+    {
+        currencySpent += purchase;
+    }
+
+    private void Pause(bool isShown)
+    {
+      
+        OnPaused?.Invoke(isShown);
+        isGamePaused = isShown;
+       
 
     }
 
@@ -64,24 +71,19 @@ public class GameManager : MonoBehaviour
         kills++;
     }
 
-    private void Shop_OnBuyTurret(Turret turret, int c)
-    {
-        currencySpent += c;
-        if (turret == null) return;
-        turrets.Add(turret);
-
-    }
 
     void GameWon()
     {
         OnGameEnd?.Invoke(true);
         GameDone("You Win!");
+        DataHandler.IncrementFlag(DataHandler.Flag.totalWins);
     }
 
    private void GameOver()
     {
         OnGameEnd?.Invoke(false);
         GameDone("Game Over!");
+        
     }
 
 
@@ -109,26 +111,35 @@ public class GameManager : MonoBehaviour
     }
 
 
-    // Update is called once per frame
-    void FixedUpdate()
+    private IEnumerator RealTimeElapsed()
     {
-        elapsedTime += Time.deltaTime;
-    }
+        while(gameDone == false)
+        {
+            float adjustedWait = Time.timeScale;
 
+            yield return new WaitForSeconds(adjustedWait);
+            elapsedTime++;
+        }
+        
+        
+    }
 
     private void OnDestroy()
     {
         HomeBase.OnBaseDie -= GameOver;
-        Shop.OnBuyTurret -= Shop_OnBuyTurret;
+        CurrencyManager.onPurchase -= CurrencyManager_onPurchase;
+        CurrencyManager.onRefund -= CurrencyManager_onRefund;
         Enemy.OnEnemyKilled -= Enemy_OnEnemyDeath;
-        WaveManager.OnGameDone -= GameWon;
-        AlertManager.OnAlert -= AlertManager_OnAlert;
+        WaveManager.OnAllEnemiesKilled -= GameWon;
+        AlertManager.OnAlert -= Pause;
+        PauseMenu.onWorldStop -= Pause;
     }
 
-    public bool GetIsGamePaused()
+    public bool IsGamePaused()
     {
         return isGamePaused;
     }
+
     public float GetRefundPercent()
     {
         return refundPercent;

@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3213377004868617498
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[0].Value
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[3].Value
+      value: 0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[7].Value
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[8].Value
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[9].Value
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[10].Value
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1396631873439052971, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: statDictionary._serializedList.Array.data[11].Value
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414599794266675044, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b2a6115f9cc5a584f9304d7d91e48e35, type: 3}
+    - target: {fileID: 1572663291582687042, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: startNode
+      value: 
+      objectReference: {fileID: 11400000, guid: 51f6d9f18f09d974d9bcde68badc2a99, type: 2}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3701498970442556941, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4623013637464630519, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 05ebc307c8c3b954a84f887cfa0b731a, type: 3}
+    - target: {fileID: 5558550523678234974, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: m_Name
+      value: Shuriken Turret Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: Icon
+      value: 
+      objectReference: {fileID: 21300000, guid: b2a6115f9cc5a584f9304d7d91e48e35, type: 3}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: price
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: ActorName
+      value: Ninja Turret
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: Description
+      value: Shoots shurikens that boounce on critical hit. Increased crit chance
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: targetingStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 7975467775923714353, guid: 3d206fe9de138244da770ea20fc9b148, type: 3}
+    - target: {fileID: 7217415992524428653, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: timeBetweenConsecutiveShot
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7829440689162455869, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: currentSpriteGroup.turretSprites._serializedList.Array.data[1].Value
+      value: 
+      objectReference: {fileID: 21300000, guid: b2a6115f9cc5a584f9304d7d91e48e35, type: 3}
+    - target: {fileID: 7829440689162455869, guid: d419b285604ab2542af0df604a4e9e88, type: 3}
+      propertyPath: currentSpriteGroup.turretSprites._serializedList.Array.data[2].Value
+      value: 
+      objectReference: {fileID: 21300000, guid: 05ebc307c8c3b954a84f887cfa0b731a, type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d419b285604ab2542af0df604a4e9e88, type: 3}

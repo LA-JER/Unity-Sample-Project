@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static ITargetable;
 
 public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
 {
@@ -11,6 +12,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
         Major,
         Boss
     }
+    
 
     [SerializeField] private Sprite Icon;
 
@@ -18,9 +20,11 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
 
     [SerializeField] private string Description;
     [SerializeField] private EnemyRank rank;
+    [SerializeField] private PlayArea playArea;
     [SerializeField] private int value;
-    public  List<Transform> waypoints = new List<Transform>();
+    public  List<Vector3> waypoints = new List<Vector3>();
 
+    
     public Rigidbody2D rb;
     private Health health;
     public  StatManager statManager;
@@ -28,6 +32,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
     public float  distanceThreshold = 0.05f;
     private bool setsTargetsItself = true;
     private bool isTargetable = true;
+    //private bool isPaused = false;
 
     private void Start()
     {
@@ -35,10 +40,16 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
         Initialize();
     }
 
+    /*
+    private void GameManager_OnPaused(bool paused)
+    {
+        isPaused = paused;
+    }*/
+
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!GameManager.Instance.GetIsGamePaused())
+        if (!GameManager.Instance.IsGamePaused())
         {
             Move();
         } else
@@ -55,12 +66,12 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
     {
         if (waypoints.Count > 0 && rb != null)
         {
-            Vector2 direction = (waypoints[0].position - transform.position).normalized;
+            Vector2 direction = (waypoints[0] - transform.position).normalized;
             //Vector2 direction = (new Vector2(target.position.x, target.position.y) - GetRigidbody2D().position).normalized;
             rb.velocity = (direction * statManager.GetStat(StatManager.Stat.moveSpeed));
             //GetRigidbody2D().MovePosition(GetRigidbody2D().position *  direction);
             //check if the object is close enough to the waypoint
-            if (Vector2.Distance(transform.position, waypoints[0].position) <= distanceThreshold)
+            if (Vector2.Distance(transform.position, waypoints[0]) <= distanceThreshold)
             {
 
                 waypoints.RemoveAt(0);
@@ -72,7 +83,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
     {
         if (collision != null )
         {
-            if(!GameManager.Instance.GetIsGamePaused())
+            if(!GameManager.Instance.IsGamePaused())
             {
                 if (collision.CompareTag("Home"))
                 {
@@ -117,7 +128,7 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
     {
         if(setsTargetsItself)
         {
-            waypoints = EnemyPathManager.Instance.GetWayPoints();
+            waypoints = EnemyPathManager.Instance.Getpath();
         }
 
         statManager = GetComponent<StatManager>();
@@ -140,12 +151,6 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
         //GameManager.OnPaused += GameManager_OnPaused;
     }
 
-    private void GameManager_OnPaused(bool isPaused)
-    {
-        //this.isPaused = isPaused;
-        rb.velocity = Vector3.zero;
-    }
-
     public bool IsTargetable()
     {
         return isTargetable;
@@ -156,16 +161,12 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
         setsTargetsItself = setsItself;
     }
 
-    public void AddTarget(Transform target)
-    {
-        waypoints.Add(target);
-    }
 
     public void SetPath(List<Transform> newTargets)
     {
         foreach(Transform t in newTargets)
         {
-            waypoints.Add(t);
+            waypoints.Add(t.position);
         }
     }
 
@@ -197,5 +198,10 @@ public abstract class Enemy : MonoBehaviour, IHoverInfo, ITargetable
     public Sprite GetIcon()
     {
         return Icon;
+    }
+
+    public PlayArea GetPlayableArea()
+    {
+        return playArea;
     }
 }
