@@ -3,7 +3,7 @@
 
 Welcome to the 2D Unity Tower Defense Demo! This is a short demo showcasing a basic tower defense game built using Unity. The project includes essential features such as enemy pathfinding, tower placement, and upgradeable towers! The primary objective is to prevent enemies from reaching the end of the path by strategically placing and upgrading towers.
 
-<img src="gameStart.png" alt="In game screenshot" width="400"/>
+<img src="gameStart.png" alt="In game screenshot" width="600"/>
 
 ## Play The Game!
 You can play the game directly on ([itch here](https://la-jer.itch.io/tower-defense-demo))!
