@@ -1,11 +1,7 @@
 
-
-Check it out here!
-
-<iframe frameborder="0" src="https://itch.io/embed-upload/10713318?color=B7B597" allowfullscreen="" width="640" height="380"><a href="https://la-jer.itch.io/tower-defense-demo">Play Alien Defense! on itch.io</a></iframe>
-
-
 ## Introduction
+
+![In game screenshot](Screenshot 2025-09-10 102933.png)
 
 Welcome to the 2D Unity Tower Defense Demo! This is a short demo showcasing a basic tower defense game built using Unity. The project includes essential features such as enemy pathfinding, tower placement, and upgradeable towers! The primary objective is to prevent enemies from reaching the end of the path by strategically placing and upgrading towers.
 
